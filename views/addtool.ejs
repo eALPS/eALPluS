@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel='stylesheet' href='/ealplus-public/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/ealplus-public/stylesheets/form.css'/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top_contents">
+        <div class="title">eALPluS</div>
+        <div class="menu">
+          <ul>
+            <li><a href="#" class="link">About</a></li>
+            <li><a href="#" class="link">Return</a></li>
+            <li><a href="#" class="link">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="main_contents">
+        <div class="addtool_form">
+          <div id="cate_1" class="category display_on">
+            <div class="category_name">ツール名</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_name" size="40">
+            </div>
+          
+            <div class="category_name">ツールID</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_id" size="40">
+            </div>
+          </div>
+
+          <div id="cate_2" class="category">
+            <div class="category_radio">
+              <input id="single" type="radio" name="proxy_rule" value="single" onchange="page_list_change()" checked>
+              <label class="tab_item single_img" for="single">シングル</label>
+              <input id="multi" type="radio" name="proxy_rule" value="multi" onchange="page_list_change()">
+              <label class="tab_item multi_img" for="multi">マルチ</label>
+            </div>
+          </div>
+
+          <div id="cate_3" class="category">
+            <div class="category_name">ツールURL</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_url" size="40">
+            </div>
+
+            <div class="category_info">[student_number]を挿入すると学籍番号をURLに追加することができます<br>例：http://abc.com?id=[student_number]&・・・</div>
+          </div>
+
+          <div id="cate_4" class="category">
+            <div class="category_name">ルーティングルールの追加</div>
+            <table id="route_table">
+              <tr>
+                <th class="del_td"></th>
+                <th class="student_number_td">学籍番号</th>
+                <th class="tool_url_td">ツールURL</th>
+              </tr>
+            </table>
+            <div id="add_tb">+</div>
+          </div>
+
+          <div id="cate_5" class="category">
+            <div class="category_name">作成中</div>
+            <div class="loader">Loading...</div>
+          </div>
+
+          <div class="control_area">
+            <div class="control_button">
+              <div id="back_button">戻る</div>
+              <div id="next_button">次へ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script type="text/javascript" src="/ealplus-public/javascripts/addtool.js"></script>
+    </div>
+  </body>
+</html>

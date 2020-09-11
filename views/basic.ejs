@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel='stylesheet' href='/ealplus-public/stylesheets/style.css'/>
+    <link rel='stylesheet' href='/ealplus-public/stylesheets/tool_list.css'/>
+  </head>
+  <body>
+    <div class="container">
+      <div class="top_contents">
+        <div class="title">eALPluS<a href="/connection/" class="link"></a></div>
+        <div class="menu">
+          <ul>
+            <li><a href="#" class="link">About</a></li>
+            <li><a href="#" class="link">Return</a></li>
+            <li><a href="#" class="link">Logout</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="main_contents">
+        <div class="tool_area">
+        <% tool_list.forEach(function(tool) { %>                                                                                                                                                                                                  
+          <div class="one_tool" id="<%= tool.tool_id %>">
+            <div class="tool_img"><%= tool.tool_name[0] %></div>
+            <div class="tool_name"><%= tool.tool_name %></div>
+            <a href="./Tool?id=<%= tool.tool_id %>" title="<%= tool.tool_name %>"></a>
+            <% if (role) { %>
+              <div class="edit_tool">
+                <a href="./EditTool?id=<%= tool.tool_id %>" title="ツールの編集"></a>
+              </div>
+            <% } %>
+          </div>                                                                                                                                                                                                                                       
+        <% }); %>
+        <% if (role) { %>
+          <div class="one_tool">
+            <div class="tool_img">+</div>
+            <div class="tool_name">ツールの追加</div>
+            <a href="./AddTool" title="ツールの追加"></a>
+          </div>
+        <% } %>
+        </div>
+        <div class="class_name">
+          Connected 
+          <% if ((LTI['https://purl.imsglobal.org/spec/lti/claim/context'] != null) && LTI['https://purl.imsglobal.org/spec/lti/claim/context'].label != null) { %>
+            <%= LTI['https://purl.imsglobal.org/spec/lti/claim/context'].label %>
+          <% } %>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>

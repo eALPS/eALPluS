@@ -104,4 +104,7 @@ a:link, a:visited, a:hover, a:active {
   .top_contents{
     justify-content: center;
   }
+  .menu ul{
+    margin: 0;
+  }
 }

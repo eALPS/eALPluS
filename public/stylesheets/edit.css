@@ -1,0 +1,296 @@
+.menu_bar{
+    width: 124px;
+    height: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;
+}
+
+#tool_info_tab{
+    background: rgba(109, 192, 109, 0.3);
+    width: 120px;
+    height: 30px;
+    border-radius: 15px;
+
+    margin: 5px 2px;
+
+    line-height: 30px;
+    text-align: center;
+    font-size: 18px;
+    cursor : pointer;
+
+    color: rgb(47, 145, 47);
+}
+
+#log_info_tab{
+    width: 120px;
+    height: 30px;
+    border-radius: 15px;
+
+    margin: 5px 2px;
+
+    line-height: 30px;
+    text-align: center;
+    font-size: 18px;
+    cursor : pointer;
+}
+
+#tool_info_tab:hover,#log_info_tab:hover{
+    color: rgb(47, 145, 47);
+}
+
+
+.info_contents{
+    width: calc(100% - 124px);
+    height: 100%;
+    overflow: auto;
+}
+
+
+
+
+
+
+
+
+.info_contents::-webkit-scrollbar{
+    display: none;
+}
+
+.category{
+    width: 100%;
+    margin-bottom: 40px;
+}
+
+.route_mode{
+    display: none;
+}
+
+.display_on{
+    display: block;
+}
+
+.category_name{
+    width: 100%;
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align:center;
+    color: #000;
+}
+
+.category_input span{
+    display: block;
+    font-size: 12px;
+    font-weight: bold;
+    color: #F00;
+    text-align: center;
+}
+
+.category_input{
+    width: 100%;
+}
+
+.category_input_text{
+    padding: 2px 0;
+    width: calc(100% - 64px);
+    height: 30px;
+    margin: 5px 30px;
+    border: solid 1px #dbdbdb;
+    border-radius: 5px;
+    font-size: 18px;
+    outline: none;
+    text-align: center;
+    background: #F0F0F0;
+}
+
+.category_input_text:focus{
+    background: #FFF;
+}
+
+.category_info{
+    width: calc(100% - 60px);
+    margin: 0 30px;
+    font-size: 12px;
+    color: #9C9C9C;
+}
+
+#delete_button{
+    width: 120px;
+    height: 40px;
+    margin: 10px auto;
+    line-height: 40px;
+    text-align: center;
+    color: #FFF;
+    font-weight: 800;
+    font-size: 18px;
+    background: #9C9C9C;
+    border-radius: 5px;
+    cursor : pointer;
+    opacity: 0.8;
+}
+
+#delete_button:hover{
+    background: rgb(255, 116, 116);
+    opacity: 1;
+}
+
+.control_button{
+    width: calc(100% - 60px);
+    margin: 30px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+#cancel_button{
+    width: 120px;
+    height: 40px;
+    margin: 0 10px;
+    line-height: 40px;
+    text-align: center;
+    color: #FFF;
+    font-weight: 800;
+    font-size: 18px;
+    background: #9C9C9C;
+    border-radius: 5px;
+    cursor : pointer;
+    opacity: 0.8;
+}
+
+#save_button{
+    width: 120px;
+    height: 40px;
+    margin: 0 10px;
+    line-height: 40px;
+    text-align: center;
+    color: #FFF;
+    font-weight: 800;
+    font-size: 18px;
+    background: rgb(109, 192, 109);
+    border-radius: 5px;
+    cursor : pointer;
+    opacity: 0.8;
+}
+
+#cancel_button:hover, #save_button:hover{
+    opacity: 1.0;
+}
+
+.category_radio{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+input[name="proxy_rule"]{
+    display: none;
+}
+
+.tab_item {
+    width: 200px;
+    height: 160px;
+    margin: 15px;
+    border-radius: 15px;
+    background-color: rgb(245, 245, 245);
+    border: solid 5px rgb(245, 245, 245);
+    font-size: 18px;
+    text-align: center;
+    color: #1a1a1a;
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    cursor : pointer;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, .5);
+}
+
+.tab_item:hover {
+    opacity: 0.75;
+}
+
+.category_radio input:checked + .tab_item {
+    border: solid 5px rgb(109, 192, 109);
+    background-color: rgb(255, 255, 255);
+}
+
+.single_img{
+    background-image: url("../images/proxy_rule_single.png");
+    background-size: 85px 136px;
+    background-repeat: no-repeat;
+    background-position: bottom center;
+}
+
+.multi_img{
+    background-image: url("../images/proxy_rule_multi.png");
+    background-size: 100px 125px;
+    background-repeat: no-repeat;
+    background-position: bottom 10px center;
+}
+
+#route_table{
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    word-wrap: break-word;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+#route_table tr:nth-child(odd){
+    background-color: #eee;
+}
+
+#route_table th{
+    color: #FFF;
+}
+
+.del_td{
+    width: 30px;
+    background-color: rgb(109, 192, 109);
+}
+.student_number_td{
+    background-color: rgb(109, 192, 109);
+}
+.tool_url_td{
+    background-color:rgb(109, 192, 109);
+}
+#add_tb{
+    width: calc(100% - 30px);
+    margin: 0 auto;
+    height: 25px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    line-height: 25px;
+    border: solid 1px rgb(255, 255, 255);
+    border-radius: 3px;
+    cursor : pointer;
+    background: rgba(109, 192, 109);
+    color: #FFF;
+}
+#add_tb:hover{
+    opacity: 0.75;
+}
+.del_tb_button{
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    vertical-align:middle;
+    border: none;
+    border-radius: 10px;
+    background: #F00;
+    color: #FFF;
+    text-align: center;
+    line-height: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor : pointer;
+    opacity: 0.3;
+}
+.del_tb_button:hover{
+    opacity: 1;
+}
+

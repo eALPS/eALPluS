@@ -57,8 +57,7 @@ document.getElementById("next_button").onclick = function(){
         //データを送信
         xhr = new XMLHttpRequest;
         xhr.onload = function(){
-            var res = xhr.responseText;
-            if (res.length>0) alert(res);
+            location.href = "./";
         };
         xhr.onerror = function(){
             alert("error!");

@@ -8,7 +8,7 @@
   <body>
     <div class="container">
       <div class="top_contents">
-        <div class="title">eALPluS</div>
+        <div class="title">eALPluS<a href="/connection/" class="link"></a></div>
         <div class="menu">
           <ul>
             <li><a href="#" class="link">About</a></li>
@@ -18,51 +18,90 @@
         </div>
       </div>
       <div class="main_contents">
-        <div class="addtool_form">
-          <div id="cate_1" class="category display_on">
-            <div class="category_name">ツール名</div>
-            <div class="category_input">
-              <input type="text" class="category_input_text" name="tool_name" size="40">
-            </div>
-          
-            <div class="category_name">ツールID</div>
-            <div class="category_input">
-              <input type="text" class="category_input_text" name="tool_id" size="40">
-            </div>
-          </div>
-
-          <div id="cate_2" class="category display_on">
-            <div class="category_radio">
-              <input id="single" type="radio" name="proxy_rule" value="single" onchange="page_list_change()" checked>
-              <label class="tab_item single_img" for="single">シングル</label>
-              <input id="multi" type="radio" name="proxy_rule" value="multi" onchange="page_list_change()">
-              <label class="tab_item multi_img" for="multi">マルチ</label>
-            </div>
-          </div>
-
-          <div id="cate_3" class="category display_on">
-            <div class="category_name">ツールURL</div>
-            <div class="category_input">
-              <input type="text" class="category_input_text" name="tool_url" size="40">
-            </div>
-
-            <div class="category_info">[student_number]を挿入すると学籍番号をURLに追加することができます<br>例：http://abc.com?id=[student_number]&・・・</div>
-          </div>
-
-          <div id="cate_4" class="category display_on">
-            <div class="category_name">ルーティングルールの追加</div>
-            <table id="route_table">
-              <tr>
-                <th class="del_td"></th>
-                <th class="student_number_td">学籍番号</th>
-                <th class="tool_url_td">ツールURL</th>
-              </tr>
-            </table>
-            <div id="add_tb">+</div>
-          </div>
- 
+        <div class="menu_bar">
+          <div id="tool_info_tab">ツール情報</div>
+          <div id="log_info_tab">ログ情報</div>
         </div>
+        <div class="info_contents">
+          <div id="tool_info_contents">
+            <div class="category">
+              <div class="category_name">ツール名</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_name" size="40" value="<%= tool.tool_name %>">
+              </div>
+            
+              <div class="category_name">ツールID</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_id" size="40" value="<%= tool.tool_id %>" readonly>
+                <span>*変更できません</span>
+              </div>
+            </div>
+
+            <div class="category">
+              <div class="category_name">ルーティングモード</div>
+              <div class="category_radio">
+                <input id="single" type="radio" name="proxy_rule" value="single" onchange="page_list_change()" <% if (tool.route_mode == "single") { %> checked <% } %>>
+                <label class="tab_item single_img" for="single">シングル</label>
+                <input id="multi" type="radio" name="proxy_rule" value="multi" onchange="page_list_change()" <% if (tool.route_mode == "multi") { %> checked <% } %>>
+                <label class="tab_item multi_img" for="multi">マルチ</label>
+              </div>
+            </div>
+
+            <div class="category">
+              <div id="single_mode" class="route_mode<% if (tool.route_mode == "single") { %> display_on<% } %>">
+                <div class="category_name">ツールURL</div>
+                <div class="category_input">
+                  <input type="text" class="category_input_text" name="tool_url" size="40" <% if (tool.route_mode == "single") { %>value = <%= tool.route_url %><% } %>>
+                </div>
+    
+                <div class="category_info">[student_number]を挿入すると学籍番号をURLに追加することができます<br>例：http://abc.com?id=[student_number]&・・・</div>
+              </div>
+
+              <div id="multi_mode" class="route_mode<% if (tool.route_mode == "multi") { %> display_on<% } %>">
+                <div class="category_name">ルーティングルールの追加</div>
+                <table id="route_table">
+                  <tr>
+                    <th class="del_td"></th>
+                    <th class="student_number_td">学籍番号</th>
+                    <th class="tool_url_td">ツールURL</th>
+                  </tr>
+                  <% if (tool.route_list) { %>
+                    <% var tool_list_len = 0; %>
+                    <% for( var route in tool.route_list ){ %> 
+                      <tr>
+                        <td><input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" /></td>
+                        <td><input type="text" class="category_input_text" name="route_<%= tool_list_len %>_id" size="40" value="<%= route %>"></td>
+                        <td><input type="text" class="category_input_text" name="route_<%= tool_list_len %>_url" size="40" value="<%= tool.route_list[route] %>"></td>
+                      </tr>
+                      <% tool_list_len += 1; %>
+                    <% } %>
+                  <% } %>
+                </table>
+                <div id="add_tb">+</div>
+              </div>
+            </div>
+
+            <div class="category">
+              <div class="category_name">ツールの削除</div>
+              <div id="delete_button">削除</div>
+            </div>
+            
+            <div class="control_button">
+              <div id="cancel_button">キャンセル</div>
+              <div id="save_button">保存</div>
+            </div>
+
+            
+            
+          </div>
+          <div id="log_info_contents">
+
+          </div>         
+        </div>
+
+        <script type="text/javascript" src="/ealplus-public/javascripts/edittool.js"></script>
       </div>
+        
       
     </div>
   </body>

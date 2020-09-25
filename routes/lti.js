@@ -99,6 +99,15 @@ router.post("/return", (req, res) => {
   req.session.destroy();
 });
 
+router.get("/return", (req, res) => {
+  res.redirect(req.session.decoded_launch["https://purl.imsglobal.org/spec/lti/claim/launch_presentation"].return_url);
+});
+
+router.get("/logout", (req, res) => {
+  res.redirect(req.session.decoded_launch["https://purl.imsglobal.org/spec/lti/claim/launch_presentation"].return_url);
+  req.session.destroy();
+});
+
 
 
 module.exports = router;

@@ -2,6 +2,8 @@
 const express = require("express");
 const morgan = require("morgan");
 const path = require('path');
+const favicon = require('serve-favicon');
+
 
 var app = express();
 
@@ -12,6 +14,7 @@ app.set('view engine', 'ejs');
 app.use(morgan('dev'));
 //app.use(express.json());
 app.use("/ealplus-public",express.static(path.join(__dirname, 'public')));
+app.use(favicon(__dirname + '/public/images/favicon.ico'));
 //app.use(express.text());
 app.use(express.urlencoded({ extended: true }));
 
@@ -22,6 +25,9 @@ app.use( (req,res,next) => {
 
 function sessionCheck(req, res, next) {
   if (req.session.decoded_launch) {
+    if(!req.session.decoded_launch.student_id){
+      req.session.decoded_launch.student_id = req.session.decoded_launch.email.split('@')[0];
+    }
     next();
   } else {
     res.redirect('/unauthenticated');
@@ -45,6 +51,7 @@ app.use(app.session);
 
 app.use("/connection",sessionCheck,connectionRouter);
 app.use('/user', usersRouter);
+
 
 var url_converter = require('./routes/url_converter');
 app.use('/*', sessionCheck,url_converter);

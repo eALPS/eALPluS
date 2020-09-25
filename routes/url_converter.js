@@ -9,7 +9,7 @@ router.get('/*', function(req, res, next) {
         var t_url = req.session.decoded_launch.launch_tool_url;
         var n_url = url.parse(req.originalUrl);
 
-        res.redirect(t_url + n_url.pathname);
+        res.redirect(t_url + n_url.path);
     }
 
 });

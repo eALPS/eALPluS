@@ -12,33 +12,41 @@
         <div class="menu">
           <ul>
             <li><a href="#" class="link">About</a></li>
-            <li><a href="#" class="link">Return</a></li>
-            <li><a href="#" class="link">Logout</a></li>
+            <li><a href="/lti/return" class="link">Return</a></li>
+            <li><a href="/lti/logout" class="link">Logout</a></li>
           </ul>
         </div>
       </div>
       
       <div class="main_contents">
         <div class="tool_area">
-        <% tool_list.forEach(function(tool) { %>                                                                                                                                                                                                  
-          <div class="one_tool" id="<%= tool.tool_id %>">
-            <div class="tool_img"><%= tool.tool_name[0] %></div>
-            <div class="tool_name"><%= tool.tool_name %></div>
-            <a href="./Tool?id=<%= tool.tool_id %>" title="<%= tool.tool_name %>"></a>
-            <% if (role) { %>
-              <div class="edit_tool">
-                <a href="./EditTool?id=<%= tool.tool_id %>" title="ツールの編集"></a>
+          <div class="tool_list">
+          <% tool_list.forEach(function(tool) { %>                                                                                                                                                                                                  
+            <div class="one_tool" id="<%= tool.tool_id %>">
+              <div class="tool_img">
+                <% if (tool.route_mode == "single") { %>
+                  <img src="https://www.google.com/s2/favicons?domain=<%= tool.route_url %>" alt="<%= tool.tool_name[0] %>">
+                <% }else{%>
+                  <img src="/ealplus-public/images/favicon.ico" alt="<%= tool.tool_name[0] %>">
+                <% } %>
               </div>
-            <% } %>
-          </div>                                                                                                                                                                                                                                       
-        <% }); %>
-        <% if (role) { %>
-          <div class="one_tool">
-            <div class="tool_img">+</div>
-            <div class="tool_name">ツールの追加</div>
-            <a href="./AddTool" title="ツールの追加"></a>
+              <div class="tool_name"><%= tool.tool_name %></div>
+              <a href="/connection/<%= tool.class %>/Tool?id=<%= tool.tool_id %>" title="<%= tool.tool_name %>"></a>
+              <% if (role) { %>
+                <div class="edit_tool">
+                  <a href="/connection/<%= tool.class %>/EditTool?id=<%= tool.tool_id %>" title="ツールの編集"></a>
+                </div>
+              <% } %>
+            </div>                                                                                                                                                                                                                                       
+          <% }); %>
+          <% if (role) { %>
+            <div class="one_tool">
+              <div class="tool_img">+</div>
+              <div class="tool_name">ツールの追加</div>
+              <a href="/connection/<%= LTI['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid %>/AddTool" title="ツールの追加"></a>
+            </div>
+          <% } %>
           </div>
-        <% } %>
         </div>
         <div class="class_name">
           Connected 

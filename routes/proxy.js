@@ -25,7 +25,7 @@ router.use(sessionMiddleware);
 
 
 
-async function proxyDB(s_class,s_id){
+async function proxyDB(s_class,s_id,s_sid){
   return new Promise((resolve, reject) => {
     collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
       var p_url = "";
@@ -34,8 +34,16 @@ async function proxyDB(s_class,s_id){
       }
       else{
         if(docs.length){
-          var temp_url = url.parse(docs[0].route_url);
-          p_url = temp_url.protocol + "//" + temp_url.host;
+          if(docs[0].route_mode == "single"){
+            var temp_url = url.parse(docs[0].route_url);
+            p_url = temp_url.protocol + "//" + temp_url.host;
+          }
+          else{
+            if(docs[0].route_list[s_sid]){
+              var temp_url = url.parse(docs[0].route_list[s_sid]);
+              p_url = temp_url.protocol + "//" + temp_url.host;
+            }
+          }
         }
       }
       resolve(p_url);
@@ -56,7 +64,7 @@ var options = {
             router.session(req , {},async() =>{
             //console.log(req.session.decoded_launch);
             var par = req.url.slice(1).split('/');
-            var result_url = await proxyDB(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid,par[2]);   
+            var result_url = await proxyDB(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid,par[2],req.session.decoded_launch.student_id);   
             if(!result_url.length){
               throw "no_data"
             }
@@ -65,7 +73,7 @@ var options = {
         });
       }
       else{
-        var result_url = await proxyDB(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid,par[2]);   
+        var result_url = await proxyDB(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid,par[2],req.session.decoded_launch.student_id);   
         req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid + "/" + par[2];   
 
         if(!result_url.length){
@@ -87,8 +95,9 @@ var options = {
   ws: true,
   secure: false,
   changeOrigin: true,
+  xfwd: true,
   onProxyRes: function (proxyRes, req, res) {
-    //console.log(Object.keys(proxyRes.headers));
+    proxyRes.headers['x-added'] = 'foobar';
   }
 
 };

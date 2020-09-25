@@ -16,8 +16,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    
 
     flex-wrap: wrap;
+    max-width: 600px;
     width: 100%;
     height: calc(100% - 25px);
 
@@ -25,8 +27,17 @@
 
 }
 
+.tool_list{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
 .one_tool{
     position: relative;
+
     width: 125px;
     height: 125px;
 }
@@ -53,14 +64,24 @@
     margin: 10px auto;
     border-radius: 50px;
 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     font-size: 30px;
     font-weight: bold;
 
     text-align: center;
     line-height: 80px;
 
-    background-color: rgb(109, 192, 109);
-    color: rgb(255, 255, 255);
+    background-color: rgb(168, 168, 168, 0.2);
+    color: rgb(125, 125, 125);
+
+
+}
+
+.tool_img img{
+    width: 30px;
 }
 
 .tool_name{

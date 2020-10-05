@@ -48,7 +48,12 @@
     overflow: auto;
 }
 
-
+.tool_edit_error{
+    color: #f00;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+}
 
 
 
@@ -294,3 +299,28 @@ input[name="proxy_rule"]{
     opacity: 1;
 }
 
+.csv_load_button_area{
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.csv_load_button{
+    background: rgb(109 192 109);
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 10px 20px;
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.csv_load_button:hover{
+    opacity: 0.75;
+}
+
+.csv_load_button input{
+    display: none;
+}
+  

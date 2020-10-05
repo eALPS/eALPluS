@@ -2,6 +2,8 @@ var page_list = ["1","2","3","5"];
 var now_page = 0;
 var route_len = 0;
 
+var tool_id_list = [];
+
 document.getElementById("back_button").onclick = function(){
     if(now_page != 0){
         document.getElementById('cate_' + page_list[now_page]).classList.remove("display_on");
@@ -19,6 +21,105 @@ document.getElementById("back_button").onclick = function(){
 };
 
 document.getElementById("next_button").onclick = function(){
+    var checke_flag = true;
+    
+    if(now_page == 0){
+        if(document.getElementsByName("tool_name")[0].value.length){
+            var reg = new RegExp(/[!"#$%&'()\*\+\.,\/:;<=>?@\[\\\]^`{|}~]/g);
+
+            if (reg.test(document.getElementsByName("tool_name")[0].value)){
+                checke_flag = false;
+                document.getElementById("tool_name_error").textContent="使用できない文字が含まれています";
+            }
+            else{
+                document.getElementById("tool_name_error").textContent="";
+            }
+   
+        }
+        else{
+            checke_flag = false;
+            document.getElementById("tool_name_error").textContent="ツール名を入力してください";
+        }
+    
+        if(document.getElementsByName("tool_id")[0].value.length){
+            var reg = new RegExp(/[!"#$%&'()\*\+\.,\/:;<=>?@\[\\\]^`{|}~]/g);
+
+            if (reg.test(document.getElementsByName("tool_id")[0].value)){
+                checke_flag = false;
+                document.getElementById("tool_id_error").textContent="使用できない文字が含まれています";
+            }
+            else{
+                if(tool_id_list.indexOf(document.getElementsByName("tool_id")[0].value) != -1){
+                    checke_flag = false;
+                    document.getElementById("tool_id_error").textContent="すでに利用されているツールIDです";
+                }
+                else{
+                    document.getElementById("tool_id_error").textContent="";
+                }
+            }
+   
+        }
+        else{
+            checke_flag = false;
+            document.getElementById("tool_id_error").textContent="ツールIDを入力してください";
+        }
+    }
+    else if(now_page == 1){
+
+    }
+    else if(now_page == 2){
+        if(document.getElementsByName("proxy_rule")[0].checked){
+            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
+            if(!reg.test(document.getElementsByName("tool_url")[0].value)){
+                checke_flag = false;
+                document.getElementById("tool_url_error").textContent="正しいURLを入力してください";
+            }
+            else{
+                document.getElementById("tool_url_error").textContent="";
+            }
+        }
+        else{
+            var reg_id = new RegExp(/[!"#$%&'()\*\+\.,\/:;<=>?@\[\\\]^`{|}~]/g);
+            var reg_url = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
+            for(var _route = 0; _route < route_len; _route++){
+                try {
+                    if(document.getElementsByName("route_" + _route + "_id")[0].value){
+                        if(reg_id.test(document.getElementsByName("route_" + _route + "_id")[0].value)){
+                            checke_flag = false;
+                            document.getElementById("route_table_error").textContent="学籍番号に使用できない文字が含まれています";
+                            break;
+                        }
+                        else{
+                            if(!reg_url.test(document.getElementsByName("route_" + _route + "_url")[0].value)){
+                                checke_flag = false;
+                                document.getElementById("route_table_error").textContent="正しいURLを入力してください";
+                                break;
+                            }
+                            else{
+                                document.getElementById("route_table_error").textContent="";
+                            }
+                        }
+    
+                    }
+                    else{
+                        checke_flag = false;
+                        document.getElementById("route_table_error").textContent="学籍番号が入力されていません";
+                        break;
+                    }
+                }
+                catch (e){}
+            }
+
+        }
+    }
+
+
+    if(checke_flag){
+        page_change();
+    }
+};
+
+function page_change(){
     document.getElementById('cate_' + page_list[now_page]).classList.remove("display_on");
     document.getElementById('cate_' + page_list[now_page+1]).classList.add("display_on");
 
@@ -66,7 +167,7 @@ document.getElementById("next_button").onclick = function(){
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.send(json_text); 
     }
-};
+}
 
 function page_list_change(){
     if(document.getElementById("single").checked){
@@ -77,49 +178,48 @@ function page_list_change(){
     }
 }
 
-function insertRow(id) {
-    // テーブル取得
+function insertRow(id,route_sid=false,route_url=false){
+
     var table = document.getElementById(id);
-    // 行を行末に追加
+
     var row = table.insertRow(-1);
-    // セルの挿入
+
     var cell1 = row.insertCell(-1);
     var cell2 = row.insertCell(-1);
     var cell3 = row.insertCell(-1);
-    // ボタン用 HTML
+
     var button = '<input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" />';
  
-    // 行数取得
     var row_len = table.rows.length;
- 
-    // セルの内容入力
-    cell1.innerHTML = button;
-    cell2.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_id" size="40">';
-    cell3.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_url" size="40">';
 
+    cell1.innerHTML = button;
+
+    if(route_sid){
+        if(route_url.indexOf("http://") == -1 && route_url.indexOf("https://") == -1){
+            route_url = "http://" + route_url
+        }
+        cell2.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_id" size="40" value="' + route_sid + '">';
+        cell3.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_url" size="40" value="' + route_url + '">';
+    }
+    else{
+        cell2.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_id" size="40">';
+        cell3.innerHTML = '<input type="text" class="category_input_text" name="route_' + route_len + '_url" size="40">';
+    }
+    
     route_len += 1;
 }
  
-/**
- * 行削除
- */
+
 function deleteRow(obj) {
-    // 削除ボタンを押下された行を取得
     tr = obj.parentNode.parentNode;
-    // trのインデックスを取得して行を削除する
     tr.parentNode.deleteRow(tr.sectionRowIndex);
 }
  
-/**
- * 列追加
- */
+
 function insertColumn(id) {
-    // テーブル取得
     var table = document.getElementById(id);
-    // 行数取得
     var rows = table.rows.length;
      
-    // 各行末尾にセルを追加
     for ( var i = 0; i < rows; i++) {
         var cell = table.rows[i].insertCell(-1);
         var cols = table.rows[i].cells.length;
@@ -130,16 +230,11 @@ function insertColumn(id) {
     }
 }
  
-/**
- * 列削除
- */
+
 function deleteColumn(id) {
-    // テーブル取得
     var table = document.getElementById(id);
-    // 行数取得
     var rows = table.rows.length;
-     
-    // 各行末のセルを削除
+
     for ( var i = 0; i < rows; i++) {
         var cols = table.rows[i].cells.length;
         if (cols < 2) {
@@ -152,3 +247,55 @@ function deleteColumn(id) {
 document.getElementById("add_tb").onclick = function(){
     insertRow('route_table');
 }
+
+document.getElementById("csv_load").addEventListener('change', function(e) {
+    var fileData = e.target.files[0];
+
+    if(!fileData.name.match('.csv')) {
+        alert('CSVファイルを選択してください');
+        return;
+    }
+
+    var reader = new FileReader();
+    reader.onload = function() {
+        var cols = reader.result.split('\n');
+        var data = [];
+        for (var i = 0; i < cols.length; i++) {
+            data[i] = cols[i].split(/[,\t]/);
+        }
+        for(var one_data of data){
+            if(one_data){
+                if(one_data.length >= 4){
+                    insertRow('route_table', one_data[1], one_data[2] + ":" + one_data[3]);
+                }
+                else if(one_data.length >= 3){
+                    insertRow('route_table', one_data[1], one_data[2]);
+                }
+                else if(one_data.length >= 2){
+                    insertRow('route_table', one_data[0], one_data[1]);
+                }
+            }
+        }
+    }
+    reader.readAsText(fileData);
+});
+
+xhr_list = new XMLHttpRequest;
+xhr_list.responseType = 'json';
+xhr_list.onload = function(){
+    for(var one_res of xhr_list.response){
+        tool_id_list.push(one_res.tool_id);
+    }
+    if(tool_id_list){
+        document.getElementsByName('tool_id')[0].value = "tool_" + tool_id_list.length;
+    }
+    else{
+        document.getElementsByName('tool_id')[0].value = "tool_0" ;
+    }
+};
+xhr_list.onerror = function(){
+    alert("error!");
+}
+xhr_list.open('post', "./ToolList", true);
+xhr_list.setRequestHeader('Content-Type', 'application/json');
+xhr_list.send(); 

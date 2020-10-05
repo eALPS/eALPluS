@@ -1,0 +1,6 @@
+{
+    "mongo_url" : "mongo" ,
+    "db_name" : "eALPluS-LTI" ,
+    "user" : "root" ,
+    "pass" : "pass" 
+}

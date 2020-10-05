@@ -1,6 +1,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var mongodb = require('../tool/db_connection');
+const logger = require('../tool/log');
 
 var router = express.Router();
 var proxyRouter = require('./proxy');
@@ -15,16 +16,12 @@ const collection_class = mongodb.collection_class;
 
 
 router.get('/', function(req, res, next) {
-    if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
-        res.redirect(req.baseUrl + "/" + req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid + "/");
-    }
-    else{
-        res.redirect("/");
-    }
+    res.redirect(req.baseUrl + "/" + req.session.decoded_launch.class_id + "/");
 });
 
 router.get('/:class/', function(req, res, next) {
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+
+    if(req.params.class == req.session.decoded_launch.class_id){
         collection_class.find({ class: req.params.class }, function(err, docs){
             if(err){
                 res.render('error', {"error":"ツールの読み込みに失敗しました"});
@@ -38,6 +35,7 @@ router.get('/:class/', function(req, res, next) {
                 else{
                     res.render('basic', {"LTI":req.session.decoded_launch,"tool_list":docs,"role":false});
                 }
+                logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","view list");
             }
         });
     }
@@ -49,7 +47,7 @@ router.get('/:class/', function(req, res, next) {
 
 
 router.get('/:class/Tool', function(req, res, next) {
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
         if(req.query.id){
             var s_id = req.query.id;
             collection_class.find({ class: req.params.class , tool_id : s_id}, function(err, docs){
@@ -61,8 +59,8 @@ router.get('/:class/Tool', function(req, res, next) {
                     if(docs[0].route_mode == "single"){
                         try{
                             var t_url = url.parse(docs[0].route_url);
-                            req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid + "/" + s_id;   
-                            res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.pathname});
+                            req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
+                            res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});
                         }
                         catch(e){
                             res.render('error', {"error":"ツールの読み込みに失敗しました"});
@@ -72,8 +70,8 @@ router.get('/:class/Tool', function(req, res, next) {
                         try{
                             if(docs[0].route_list[req.session.decoded_launch.student_id]){
                                 var t_url = url.parse(docs[0].route_list[req.session.decoded_launch.student_id]);
-                                req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid + "/" + s_id;   
-                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.pathname});
+                                req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
+                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});
                             }
                             else{
                                 res.render('error', {"error":"ルーティングルールが存在しません"});
@@ -100,7 +98,7 @@ router.get('/:class/Tool', function(req, res, next) {
 
 
 router.get('/:class/AddTool', function(req, res, next) {
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
 
         if(role_check != -1){
@@ -118,7 +116,7 @@ router.get('/:class/AddTool', function(req, res, next) {
 
 
 router.post('/:class/AddTool', function(req, res, next){
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
 
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
 
@@ -160,8 +158,33 @@ router.post('/:class/AddTool', function(req, res, next){
     }
 });
 
+router.post('/:class/ToolList', function(req, res, next){
+    if(req.params.class == req.session.decoded_launch.class_id){
+        var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
+        if(role_check != -1){
+            collection_class.find({ class: req.params.class},['tool_id'], function(err, docs){
+                if(err){
+                    res.send('db_error');
+                }
+                else if(docs.length){
+                    res.json(docs);
+                }
+                else{
+                    res.send('no_data');
+                }
+            });
+        }
+        else{
+            res.send('role_error');
+        }
+    }
+    else{
+        res.send('class_code_error');
+    }
+});
+
 router.get('/:class/EditTool', function(req, res, next){
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
         if(req.query.id){
             var s_id = req.query.id;
             var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
@@ -196,7 +219,7 @@ router.get('/:class/EditTool', function(req, res, next){
 });
 
 router.post('/:class/EditTool', function(req, res, next){
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
 
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
 
@@ -251,7 +274,7 @@ router.post('/:class/EditTool', function(req, res, next){
 
 
 router.post('/:class/DeleteTool', function(req, res, next){
-    if(req.params.class == req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+    if(req.params.class == req.session.decoded_launch.class_id){
 
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
 
@@ -281,7 +304,17 @@ router.post('/:class/DeleteTool', function(req, res, next){
 });
 
 
-router.use('/:class/:port/*', proxyRouter);
+router.use('/:class/:port/*',parameterChange, proxyRouter);
+
+function parameterChange(req, res, next){
+    if("ealps_sid" in req.query){
+        req.query.ealps_sid = req.session.decoded_launch.student_id;
+    }
+    if("ealps_cid" in req.query){
+        req.query.ealps_cid = req.session.decoded_launch.class_id;
+    }
+    next();
+}
 
 
 module.exports = router;

@@ -2,7 +2,7 @@
 .addtool_form{
     width: 100%;
     height: calc(100% - 26px);
-    max-width: 800px;
+    max-width: 1200px;
     margin: 10px 0;
     background: #FFF;
     border: solid 3px rgb(109, 192, 109);
@@ -36,6 +36,13 @@
 .display_on{
     display: block;
     animation: SlideIn 1.0s ease;
+}
+
+.tool_add_error{
+    color: #f00;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 @keyframes SlideIn {
@@ -199,14 +206,13 @@ input[name="proxy_rule"]{
     background-color:rgb(109, 192, 109);
 }
 #add_tb{
-    width: calc(100% - 5px);
-    margin: 0 auto;
+    width: 100%;
     height: 25px;
     font-size: 18px;
     font-weight: bold;
     text-align: center;
     line-height: 25px;
-    border: solid 1px rgb(255, 255, 255);
+    border-top: solid 1px rgb(255, 255, 255);
     border-radius: 3px;
     cursor : pointer;
     background: rgba(109, 192, 109);
@@ -234,6 +240,31 @@ input[name="proxy_rule"]{
 .del_tb_button:hover{
     opacity: 1;
 }
+
+.csv_load_button_area{
+  width: 100%;
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.csv_load_button{
+  background: rgb(109 192 109);
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 10px 20px;
+  display: inline-block;
+}
+
+.csv_load_button:hover{
+  opacity: 0.75;
+}
+
+.csv_load_button input{
+  display: none;
+}
+
 
 .loader {
     color: rgb(109, 192, 109);

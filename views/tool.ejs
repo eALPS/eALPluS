@@ -3,10 +3,12 @@
   <head>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel='stylesheet' href='/ealplus-public/stylesheets/tool.css'/>
+    <script type="text/javascript" src="/ealplus-public/javascripts/action-log.js"></script>
   </head>
   <body>
     <div class="tool_window">
-      <iframe id="tool" class="tool_contents" src= "<%= tool_url %>"></iframe>
+      <iframe id="tool" class="tool_contents" src= "<%= tool_url %>" onload="tool_init();"></iframe>
     </div>
   </body>
+  <script type="text/javascript" src="/ealplus-public/javascripts/tool-safety.js"></script>
 </html>

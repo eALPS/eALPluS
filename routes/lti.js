@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 const path = require('path');
+const logger = require('../tool/log');
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -40,7 +41,7 @@ registerPlatform(
   'sBSSY3yH2rgJWWs',
   'https://kuromoodle.yukkuriikouze.com/mod/lti/auth.php',
   'https://kuromoodle.yukkuriikouze.com/mod/lti/token.php',
-  'https://procon.kuropengin.com/project/submit',
+  'https://procon.kuropengin.com/lti/submit',
   { method: 'JWK_SET', key: 'https://kuromoodle.yukkuriikouze.com/mod/lti/certs.php' }
 );
 
@@ -75,11 +76,9 @@ router.post('/auth_code', (req, res) => {
 });
 
 router.post("/submit", (req, res) => {
-  launchTool(req, res, '/connection');
-  if(res.req.body.error){
-    res.render('error', { message: 'LTI認証エラー', error:{status:"E001",stack:"LMSのログインが確認できませんでした。LMSログイン後に起動し直してください"}});
-  }
+  launchTool(req, res, '/connection/');
 });
+
 
 router.post("/grading", (req, res) => {
   grade_project(req)
@@ -104,6 +103,7 @@ router.get("/return", (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
+  logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","logout");
   res.redirect(req.session.decoded_launch["https://purl.imsglobal.org/spec/lti/claim/launch_presentation"].return_url);
   req.session.destroy();
 });

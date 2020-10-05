@@ -1,8 +1,15 @@
 const mongoose = require('mongoose');
 
-mongoose.set('useUnifiedTopology', true);
-mongoose.connect('mongodb://mongo/eALPluS-LTI', {
+const db_config = require('../config/db_config.json');
+
+
+const db_path = 'mongodb://' + db_config.mongo_url ;
+mongoose.connect( db_path , {
   useNewUrlParser: true,
+  useUnifiedTopology: true,
+  user: db_config.user,
+  pass: db_config.pass,
+  dbName: db_config.db_name,
 },
   (err) => {
     if(err) {

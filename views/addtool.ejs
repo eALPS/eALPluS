@@ -8,7 +8,7 @@
   <body>
     <div class="container">
       <div class="top_contents">
-        <div class="title">eALPluS</div>
+        <div class="title">eALPluS<a href="/connection/" class="link"></a></div>
         <div class="menu">
           <ul>
             <li><a href="#" class="link">About</a></li>
@@ -24,11 +24,13 @@
             <div class="category_input">
               <input type="text" class="category_input_text" name="tool_name" size="40">
             </div>
+            <div id="tool_name_error" class="tool_add_error"></div>
           
             <div class="category_name">ツールID</div>
             <div class="category_input">
               <input type="text" class="category_input_text" name="tool_id" size="40">
             </div>
+            <div id="tool_id_error" class="tool_add_error"></div>
           </div>
 
           <div id="cate_2" class="category">
@@ -46,7 +48,9 @@
               <input type="text" class="category_input_text" name="tool_url" size="40">
             </div>
 
-            <div class="category_info">[student_number]を挿入すると学籍番号をURLに追加することができます<br>例：http://abc.com?id=[student_number]&・・・</div>
+            <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
+            <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+            <div id="tool_url_error" class="tool_add_error"></div>
           </div>
 
           <div id="cate_4" class="category">
@@ -59,6 +63,13 @@
               </tr>
             </table>
             <div id="add_tb">+</div>
+            <div class="csv_load_button_area">
+              <label class="csv_load_button" for="csv_load">
+                CSVファイルの読み込み
+                <input id="csv_load" type="file" accept=".csv"/>
+              </label>
+            </div>
+            <div id="route_table_error" class="tool_add_error"></div>
           </div>
 
           <div id="cate_5" class="category">

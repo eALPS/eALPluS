@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+router.use(express.urlencoded({ extended: true }));
 
 const path = require('path');
 const logger = require('../tool/log');
@@ -34,15 +35,16 @@ var sessionMiddleware = session({
 router.session = sessionMiddleware;
 router.use(sessionMiddleware);
 
+const lti_config = require('../config/lti_config.json');
 
 registerPlatform(
-  'https://kuromoodle.yukkuriikouze.com',
-  'moodle',
-  'sBSSY3yH2rgJWWs',
-  'https://kuromoodle.yukkuriikouze.com/mod/lti/auth.php',
-  'https://kuromoodle.yukkuriikouze.com/mod/lti/token.php',
-  'https://procon.kuropengin.com/lti/submit',
-  { method: 'JWK_SET', key: 'https://kuromoodle.yukkuriikouze.com/mod/lti/certs.php' }
+  lti_config.send_domain,
+  lti_config.lms_name,
+  lti_config.secret_key,
+  lti_config.send_domain + '/mod/lti/auth.php',
+  lti_config.send_domain + '/mod/lti/token.php',
+  lti_config.receive_domain + '/lti/submit',
+  { method: 'JWK_SET', key: lti_config.send_domain + '/mod/lti/certs.php' }
 );
 
 

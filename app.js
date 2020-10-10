@@ -1,6 +1,6 @@
 //Require Standard Modules
 const express = require("express");
-//const morgan = require("morgan");
+const morgan = require("morgan");
 const path = require('path');
 const logger = require('./tool/log');
 const favicon = require('serve-favicon');
@@ -16,27 +16,47 @@ app.set('view engine', 'ejs');
 app.use("/ealplus-public",express.static(path.join(__dirname, 'public')));
 app.use(favicon(__dirname + '/public/images/favicon.ico'));
 //app.use(express.text());
-app.use(express.urlencoded({ extended: true }));
+//app.use(express.urlencoded({ extended: true }));
 
 app.use( (req,res,next) => {
   res.locals.formData = null;
   next();
 });
 
+
 function sessionCheck(req, res, next) {
   if (req.session.decoded_launch) {
     if( !req.session.decoded_launch.student_id || !req.session.decoded_launch.class_id){
-      req.session.decoded_launch.student_id = req.session.decoded_launch.email.split('@')[0];
-      req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid;
-      logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","login");
+        if(req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext']){
+            if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext'].user_username){
+                req.session.decoded_launch.student_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext'].user_username
+            }
+            else{
+                req.session.decoded_launch.student_id = req.session.decoded_launch.email.split('@')[0];
+            }
+        }
+        else{
+            req.session.decoded_launch.student_id = req.session.decoded_launch.email.split('@')[0];
+        }
+        req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid;
+        logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","login");
     }
 
     next();
   } else {
+    //res.redirect('/connection/PIT0014/tool_2/');
     res.redirect('/unauthenticated');
   }
 };
 
+function dynamicRouteCheck(req, res, next){
+    if(req.session.decoded_launch.launch_tool_url){
+        next();
+    }
+    else{
+        res.redirect('/connection/');
+    }
+}
 
 
 var ltiRouter = require('./routes/lti');
@@ -53,11 +73,11 @@ app.use(app.session);
 
 app.use("/ealplus-api",sessionCheck,ealplusApiRouter);
 app.use("/connection",sessionCheck,connectionRouter);
-app.use('/user', usersRouter);
+//app.use('/user', usersRouter);
 
 
 var url_converter = require('./routes/url_converter');
-app.use('/*', sessionCheck,url_converter);
+app.use('/*', sessionCheck,dynamicRouteCheck,url_converter);
 
 app.use((err, req, res, next) => {
   res.status(500).send('Internal Server Error\n' + err);

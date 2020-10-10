@@ -1,5 +1,5 @@
 var express = require('express');
-var bodyParser = require('body-parser');
+
 var mongodb = require('../tool/db_connection');
 const logger = require('../tool/log');
 
@@ -8,16 +8,16 @@ var proxyRouter = require('./proxy');
 
 const url = require("url");
 
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(bodyParser.json());
-
-
 const collection_class = mongodb.collection_class;
 
 
 router.get('/', function(req, res, next) {
     res.redirect(req.baseUrl + "/" + req.session.decoded_launch.class_id + "/");
 });
+
+
+router.use('/:class/:tool/*',parameterChange, proxyRouter);
+
 
 router.get('/:class/', function(req, res, next) {
 
@@ -44,7 +44,9 @@ router.get('/:class/', function(req, res, next) {
     }
 });
 
-
+var bodyParser = require('body-parser');
+router.use(bodyParser.urlencoded({ extended: true }));
+router.use(bodyParser.json());
 
 router.get('/:class/Tool', function(req, res, next) {
     if(req.params.class == req.session.decoded_launch.class_id){
@@ -304,7 +306,7 @@ router.post('/:class/DeleteTool', function(req, res, next){
 });
 
 
-router.use('/:class/:port/*',parameterChange, proxyRouter);
+
 
 function parameterChange(req, res, next){
     if("ealps_sid" in req.query){

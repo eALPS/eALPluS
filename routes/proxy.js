@@ -1,3 +1,5 @@
+const { createProxyMiddleware } = require('http-proxy-middleware');
+
 var express = require('express');
 var router = express.Router();
 
@@ -7,10 +9,12 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
 
 
+
 var mongodb = require('../tool/db_connection');
 const collection_class = mongodb.collection_class;
 
-var sessionMiddleware = session({
+
+var LTIsessionMiddleware = session({
   name: 'lti_v1p3_library',
   secret: 'iualcoelknasfnk',
   saveUninitialized: true,
@@ -20,8 +24,8 @@ var sessionMiddleware = session({
   httpOnly: true,
   store: new MongoStore({ mongooseConnection: mongodb.connection })
 });
-router.session = sessionMiddleware;
-router.use(sessionMiddleware);
+router.session = LTIsessionMiddleware;
+router.use(LTIsessionMiddleware);
 
 
 
@@ -54,7 +58,7 @@ async function proxyDB(s_class,s_id,s_sid){
 }
 
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
+
 
 var options = {
   target: 'do-not-use',
@@ -64,8 +68,10 @@ var options = {
       if(req.headers.upgrade == "websocket"){
         return new Promise((resolve, reject) => {
             router.session(req , {},async() =>{
-            //console.log(req.session.decoded_launch);
             var par = req.url.slice(1).split('/');
+            if(par[0] !== "connection"){
+              par = req.session.decoded_launch.launch_tool_url.slice(1).split('/');
+            }
             var result_url = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id);   
             if(!result_url.length){
               throw "no_data"
@@ -81,7 +87,6 @@ var options = {
         if(!result_url.length){
           throw "no_data"
         }
-
         return result_url;    
       }
     }
@@ -99,12 +104,22 @@ var options = {
   changeOrigin: true,
   xfwd: true,
   onProxyRes: function (proxyRes, req, res) {
-    proxyRes.headers['x-added'] = 'foobar';
-  }
 
+    proxyRes.headers['x-added'] = 'foobar';
+    
+    //const proxyCookie = proxyRes.headers['set-cookie'];
+    //if (proxyCookie) {
+      //req.session['cookie'] = proxyCookie; 
+      //req.session['proxy-cookie']  = proxyCookie;
+    //}
+  },
+  onProxyReq: function(proxyReq, req, res){
+    //if (req.session['proxy-cookie']) {
+      //proxyReq.setHeader('cookie', req.session['proxy-cookie']);
+    //}
+  }
 };
 
 const Proxy = createProxyMiddleware(options);
-
 
 module.exports = Proxy;

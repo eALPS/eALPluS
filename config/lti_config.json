@@ -1,0 +1,6 @@
+{
+    "send_domain" : "" ,
+    "receive_domain" : "" ,
+    "lms_name" : "",
+    "secret_key" : ""
+}

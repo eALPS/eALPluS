@@ -2,6 +2,7 @@ function tool_init(){
 
     for(var a_one of document.getElementById("tool").contentWindow.document.getElementsByTagName('a')){
         a_one.oncontextmenu = function () {return false;};
+        a_one.target = "";
     }
 
     document.getElementById("tool").contentWindow.document.onclick = function( e ){

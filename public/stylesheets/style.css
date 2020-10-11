@@ -113,8 +113,9 @@ a:link, a:visited, a:hover, a:active {
   animation-name: fade-in4;
   animation-duration: 1s; 
   animation-timing-function: ease-out;
-  animation-delay: 1s;
+  animation-delay: 0.25s;
   animation-iteration-count: 1;
+  opacity: 0;
   animation-direction: normal;
   animation-fill-mode: forwards;
 }

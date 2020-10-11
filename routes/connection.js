@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.use('/:class/:tool/*',parameterChange, proxyRouter);
+router.use('/:class/:tool/*', parameterChange, proxyRouter);
 
 
 router.get('/:class/', function(req, res, next) {

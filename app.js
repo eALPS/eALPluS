@@ -1,4 +1,3 @@
-//Require Standard Modules
 const express = require("express");
 const morgan = require("morgan");
 const path = require('path');
@@ -7,7 +6,6 @@ const favicon = require('serve-favicon');
 
 var app = express();
 
-// view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
@@ -44,7 +42,6 @@ function sessionCheck(req, res, next) {
 
     next();
   } else {
-    //res.redirect('/connection/PIT0014/tool_2/');
     res.redirect('/unauthenticated');
   }
 };

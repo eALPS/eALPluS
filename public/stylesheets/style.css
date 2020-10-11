@@ -108,3 +108,24 @@ a:link, a:visited, a:hover, a:active {
     margin: 0;
   }
 }
+
+.one_tool {
+  animation-name: fade-in4;
+  animation-duration: 1s; 
+  animation-timing-function: ease-out;
+  animation-delay: 1s;
+  animation-iteration-count: 1;
+  animation-direction: normal;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fade-in4 {
+  0% {
+    opacity: 0;
+    transform: translate3d(40px, 0, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}

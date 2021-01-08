@@ -9,7 +9,7 @@
 }
 
 #tool_info_tab{
-    background: rgba(109, 192, 109, 0.3);
+    
     width: 120px;
     height: 30px;
     border-radius: 15px;
@@ -20,8 +20,7 @@
     text-align: center;
     font-size: 18px;
     cursor : pointer;
-
-    color: rgb(47, 145, 47);
+    
 }
 
 #log_info_tab{
@@ -36,6 +35,16 @@
     font-size: 18px;
     cursor : pointer;
 }
+
+.info_contens_off{
+    display: none;
+}
+
+.info_tab_on{
+    background: rgba(109, 192, 109, 0.3);
+    color: rgb(47, 145, 47);
+}
+
 
 #tool_info_tab:hover,#log_info_tab:hover{
     color: rgb(47, 145, 47);
@@ -234,6 +243,13 @@ input[name="proxy_rule"]{
     background-size: 100px 125px;
     background-repeat: no-repeat;
     background-position: bottom 10px center;
+}
+
+.role_img{
+    background-image: url("../images/proxy_rule_role.png");
+    background-size: 100px 125px;
+    background-repeat: no-repeat;
+    background-position: center center;
 }
 
 #route_table{

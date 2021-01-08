@@ -42,6 +42,7 @@ function sessionCheck(req, res, next) {
 
     next();
   } else {
+    console.log("ya");
     res.redirect('/unauthenticated');
   }
 };
@@ -63,6 +64,7 @@ var connectionRouter = require('./routes/connection');
 var ealplusApiRouter = require('./routes/ealplus-api');
 
 app.use("/lti",ltiRouter);
+
 app.use("/unauthenticated",unauthenticatedRouter);
 
 app.session = ltiRouter.session;
@@ -70,7 +72,7 @@ app.use(app.session);
 
 app.use("/ealplus-api",sessionCheck,ealplusApiRouter);
 app.use("/connection",sessionCheck,connectionRouter);
-//app.use('/user', usersRouter);
+app.use('/user', usersRouter);
 
 
 var url_converter = require('./routes/url_converter');

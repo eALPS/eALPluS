@@ -1,14 +1,37 @@
-var route_len = 0;
+document.getElementById("tool_info_tab").onclick = function() {
+    document.getElementById("tool_info_contents").classList.add("display_on");
+    document.getElementById("log_info_contents").classList.remove("display_on");
 
+    document.getElementById("tool_info_tab").classList.add("info_tab_on");
+    document.getElementById("log_info_tab").classList.remove("info_tab_on");
+};
+
+document.getElementById("log_info_tab").onclick = function() {
+    document.getElementById("log_info_contents").classList.add("display_on");
+    document.getElementById("tool_info_contents").classList.remove("display_on");
+
+    document.getElementById("tool_info_tab").classList.remove("info_tab_on");
+    document.getElementById("log_info_tab").classList.add("info_tab_on");
+};
+
+
+var route_len = 0;
 
 function page_list_change(){
     if(document.getElementById("single").checked){
         document.getElementById("single_mode").classList.add("display_on");
+        document.getElementById("role_mode").classList.remove("display_on");
         document.getElementById("multi_mode").classList.remove("display_on");
     }
-    else{
+    else if(document.getElementById("multi").checked){
         document.getElementById("single_mode").classList.remove("display_on");
+        document.getElementById("role_mode").classList.remove("display_on");
         document.getElementById("multi_mode").classList.add("display_on");
+    }
+    else if(document.getElementById("role").checked){
+        document.getElementById("single_mode").classList.remove("display_on");
+        document.getElementById("multi_mode").classList.remove("display_on");
+        document.getElementById("role_mode").classList.add("display_on");
     }
 }
 
@@ -140,7 +163,7 @@ document.getElementById("save_button").onclick = function(){
             json_asocc.route_mode = "single";
             json_asocc.route_url = document.getElementsByName("tool_url")[0].value;
         }
-        else{
+        else if(document.getElementsByName("proxy_rule")[1].checked){
             json_asocc.route_mode = "multi";
             json_asocc.route_list = {};
             for(var _route = 0; _route < route_len; _route++){
@@ -149,6 +172,12 @@ document.getElementById("save_button").onclick = function(){
                 }
                 catch (e){}
             }
+        }
+        else if(document.getElementsByName("proxy_rule")[2].checked){
+            json_asocc.route_mode = "role";
+            json_asocc.route_list = {};
+            json_asocc.route_list.teacher = document.getElementsByName("role_teacher_url")[0].value;
+            json_asocc.route_list.student = document.getElementsByName("role_student_url")[0].value;
         }
 
 

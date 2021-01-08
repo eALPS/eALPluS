@@ -1,0 +1,112 @@
+.config_rulu_header{
+    width: calc(100% - 30px);
+    line-height: 30px;
+    margin: 0 auto;
+    border: solid 2px #6dc06d;
+    
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.config_rulu_header .config_rulu_info{
+    height: 30px;
+}
+
+.config_rulu{
+    width: calc(100% - 30px);
+    line-height: 40px;
+    margin: 0 auto;
+    border: solid 2px #6dc06d;
+    border-radius: 15px;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+.config_rulu_info{
+    display: flex;
+    width: 100%;
+    height: 40px;
+    background: #6dc06d;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    cursor : pointer;
+}
+
+.config_rulu_info_text{
+    width: 25%;
+}
+
+.edit_config_rulu{
+    height: 0px;
+    
+    transition: all 0.3s ease;
+}
+
+.open_edit_area{
+    height: 300px;
+    padding: 20px;
+    overflow: auto;
+}
+
+.edit_config_rulu .category_name{
+    margin: 0;
+}
+
+.convert_do_list{
+    width: calc(100% - 64px);
+    margin: 0 auto;
+}
+
+.convert_do_category{
+    width: 120px;
+    background: #6dc06d;
+    color: #FFF;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.convert_do_list{
+    background: #FFF;
+}
+
+.convert_do_checkbox{
+    width: 180px;
+    display: inline-block;
+}
+
+.convert_do_checkbox input{
+    cursor : pointer;
+}
+
+.convert_do_checkbox span{
+    cursor : pointer;
+    user-select: none;
+}
+
+.convert_radio input[type=radio]{
+    display: none;
+}
+
+.convert_radio label, .convert_radio span{
+    margin: 0 10px;
+    width: 100px;
+    height: 50px;
+    background: #646464;
+    color: #FFF;
+    line-height: 50px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 20px;
+}
+
+.convert_radio input:checked + .tab_item {
+    background-color: #6dc06d;
+    color: #FFF;
+    border: solid 5px #FFF;
+}
+
+

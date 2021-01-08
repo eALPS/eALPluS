@@ -52,6 +52,7 @@ router.get('/:class/Tool', function(req, res, next) {
     if(req.params.class == req.session.decoded_launch.class_id){
         if(req.query.id){
             var s_id = req.query.id;
+            var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
             collection_class.find({ class: req.params.class , tool_id : s_id}, function(err, docs){
                 if(err){
                     res.render('error', {"error":"ツールの読み込みに失敗しました"});
@@ -68,7 +69,7 @@ router.get('/:class/Tool', function(req, res, next) {
                             res.render('error', {"error":"ツールの読み込みに失敗しました"});
                         }     
                     }
-                    else{
+                    else if(docs[0].route_mode == "multi"){
                         try{
                             if(docs[0].route_list[req.session.decoded_launch.student_id]){
                                 var t_url = url.parse(docs[0].route_list[req.session.decoded_launch.student_id]);
@@ -82,6 +83,28 @@ router.get('/:class/Tool', function(req, res, next) {
                         catch(e){
                             res.render('error', {"error":"ツールの読み込みに失敗しました"});
                         }  
+                    }
+                    else if(docs[0].route_mode == "role"){
+                        try{
+                            if(docs[0].route_list){
+                                if(role_check != -1){
+                                    var t_url = url.parse(docs[0].route_list.teacher);
+                                    req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;
+                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});  
+                                }
+                                else{
+                                    var t_url = url.parse(docs[0].route_list.student);
+                                    req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;
+                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});  
+                                }    
+                            }
+                            else{
+                                res.render('error', {"error":"ルーティングルールが存在しません"});
+                            }
+                        }
+                        catch(e){
+                            res.render('error', {"error":"ツールの読み込みに失敗しました"});
+                        } 
                     }
                 }
                 else{
@@ -314,6 +337,15 @@ function parameterChange(req, res, next){
     }
     if("ealps_cid" in req.query){
         req.query.ealps_cid = req.session.decoded_launch.class_id;
+    }
+    if("ealps_role" in req.query){
+        var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
+        if(role_check != -1){
+            req.query.ealps_role = "teacher";
+        }
+        else{
+            req.query.ealps_role = "student";
+        }
     }
     next();
 }

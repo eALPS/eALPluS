@@ -29,7 +29,7 @@ router.use(LTIsessionMiddleware);
 
 
 
-async function proxyDB(s_class,s_id,s_sid){
+async function proxyDB(s_class,s_id,s_sid,role){
   return new Promise((resolve, reject) => {
     collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
       var p_url = "";
@@ -44,9 +44,19 @@ async function proxyDB(s_class,s_id,s_sid){
             p_url = temp_url.protocol + "//" + temp_url.host;
 
           }
-          else{
+          else if(docs[0].route_mode == "multi"){
             if(docs[0].route_list[s_sid]){
               var temp_url = url.parse(docs[0].route_list[s_sid]);
+              p_url = temp_url.protocol + "//" + temp_url.host;
+            }
+          }
+          else if(docs[0].route_mode == "role"){
+            if(role != -1){
+              var temp_url = url.parse(docs[0].route_list.teacher);
+              p_url = temp_url.protocol + "//" + temp_url.host;
+            }
+            else{
+              var temp_url = url.parse(docs[0].route_list.student);
               p_url = temp_url.protocol + "//" + temp_url.host;
             }
           }
@@ -72,7 +82,8 @@ var options = {
             if(par[0] !== "connection"){
               par = req.session.decoded_launch.launch_tool_url.slice(1).split('/');
             }
-            var result_url = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id);   
+            var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
+            var result_url = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check);   
             if(!result_url.length){
               throw "no_data"
             }
@@ -81,7 +92,8 @@ var options = {
         });
       }
       else{
-        var result_url = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id);   
+        var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
+        var result_url = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check);   
         req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + par[2];   
 
         if(!result_url.length){
@@ -114,9 +126,8 @@ var options = {
     //}
   },
   onProxyReq: function(proxyReq, req, res){
-    //if (req.session['proxy-cookie']) {
-      //proxyReq.setHeader('cookie', req.session['proxy-cookie']);
-    //}
+    //console.log(Object.keys(req));
+    //proxyReq.setHeader('HOST', req.originalUrl);
   }
 };
 

@@ -1,4 +1,4 @@
-var page_list = ["1","2","3","5"];
+var page_list = ["1","2","3","6"];
 var now_page = 0;
 var route_len = 0;
 
@@ -78,7 +78,7 @@ document.getElementById("next_button").onclick = function(){
                 document.getElementById("tool_url_error").textContent="";
             }
         }
-        else{
+        else if(document.getElementsByName("proxy_rule")[1].checked){
             var reg_id = new RegExp(/[!"#$%&'()\*\+\.,\/:;<=>?@\[\\\]^`{|}~]/g);
             var reg_url = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
             for(var _route = 0; _route < route_len; _route++){
@@ -111,6 +111,20 @@ document.getElementById("next_button").onclick = function(){
             }
 
         }
+        else if(document.getElementsByName("proxy_rule")[2].checked){
+            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
+            if(!reg.test(document.getElementsByName("role_teacher_url")[0].value)){
+                checke_flag = false;
+                document.getElementById("role_url_error").textContent="正しいURLを入力してください";
+            }
+            else if(!reg.test(document.getElementsByName("role_student_url")[0].value)){
+                checke_flag = false;
+                document.getElementById("role_url_error").textContent="正しいURLを入力してください";
+            }
+            else{
+                document.getElementById("role_url_error").textContent="";
+            }
+        }
     }
 
 
@@ -140,7 +154,7 @@ function page_change(){
             json_asocc.route_mode = "single";
             json_asocc.route_url = document.getElementsByName("tool_url")[0].value;
         }
-        else{
+        else if(document.getElementsByName("proxy_rule")[1].checked){
             json_asocc.route_mode = "multi";
             json_asocc.route_list = {};
             for(var _route = 0; _route < route_len; _route++){
@@ -150,7 +164,12 @@ function page_change(){
                 catch (e){}
             }
         }
-        
+        else if(document.getElementsByName("proxy_rule")[2].checked){
+            json_asocc.route_mode = "role";
+            json_asocc.route_list = {};
+            json_asocc.route_list.teacher = document.getElementsByName("role_teacher_url")[0].value;
+            json_asocc.route_list.student = document.getElementsByName("role_student_url")[0].value;
+        }
 
 
         var json_text = JSON.stringify(json_asocc);
@@ -173,8 +192,11 @@ function page_list_change(){
     if(document.getElementById("single").checked){
         page_list[2] = "3";
     }
-    else{
+    else if(document.getElementById("multi").checked){
         page_list[2] = "4";
+    }
+    else{
+        page_list[2] = "5";
     }
 }
 

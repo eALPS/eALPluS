@@ -180,6 +180,13 @@ input[name="proxy_rule"]{
     background-position: center center;
 }
 
+.role_img{
+    background-image: url("../images/proxy_rule_role.png");
+    background-size: 120px 150px;
+    background-repeat: no-repeat;
+    background-position: center center;
+}
+
 #route_table{
     width: 100%;
     word-wrap: break-word;

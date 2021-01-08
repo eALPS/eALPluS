@@ -39,6 +39,8 @@
               <label class="tab_item single_img" for="single">シングル</label>
               <input id="multi" type="radio" name="proxy_rule" value="multi" onchange="page_list_change()">
               <label class="tab_item multi_img" for="multi">マルチ</label>
+              <input id="role" type="radio" name="proxy_rule" value="role" onchange="page_list_change()">
+              <label class="tab_item role_img" for="role">ロール</label>
             </div>
           </div>
 
@@ -50,6 +52,7 @@
 
             <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
             <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+            <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
             <div id="tool_url_error" class="tool_add_error"></div>
           </div>
 
@@ -73,6 +76,22 @@
           </div>
 
           <div id="cate_5" class="category">
+            <div class="category_name">教師ツールURL</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="role_teacher_url" size="40">
+            </div>
+            <div class="category_name">学生ツールURL</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="role_student_url" size="40">
+            </div>
+
+            <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
+            <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+            <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+            <div id="role_url_error" class="tool_add_error"></div>
+          </div>
+
+          <div id="cate_6" class="category">
             <div class="category_name">作成中</div>
             <div class="loader">Loading...</div>
           </div>

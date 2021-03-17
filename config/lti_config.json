@@ -1,6 +1,6 @@
 {
-    "send_domain" : "https://moodle.pit-nagano.ac.jp" ,
-    "receive_domain" : "https://procon.kuropengin.com" ,
+    "send_domain" : "http://192.168.10.161/moodle" ,
+    "receive_domain" : "http://192.168.10.162:3000" ,
     "lms_name" : "moodle",
-    "secret_key" : "fcD15tQrb0FVGFf"
+    "secret_key" : "dmCFJ45VBRKKAOo"
 }

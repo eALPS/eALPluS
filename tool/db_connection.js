@@ -18,7 +18,7 @@ mongoose.connect( db_path , {
 });
 mongoose.Promise = Promise;
 
-const template_class = new mongoose.Schema({class: 'String', tool_id: 'String', tool_name: 'String', route_mode: 'String', route_url: 'String', route_list: {}});
+const template_class = new mongoose.Schema({class: 'String', tool_id: 'String', tool_name: 'String', route_mode: 'String', route_url: 'String', route_list: {}, option: {}});
 
 
 exports.connection = mongoose.connection;

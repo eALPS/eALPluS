@@ -16,7 +16,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.use('/:class/:tool/*', parameterChange, proxyRouter);
+router.use('/:class/:tool/*',  proxyRouter);
 
 
 router.get('/:class/', function(req, res, next) {
@@ -329,11 +329,55 @@ router.post('/:class/DeleteTool', function(req, res, next){
 });
 
 
+function option_search(s_class,t_id){
+    
+    return new Promise((resolve, reject) => {
+        collection_class.find({ class: s_class, tool_id : t_id}, function(err, docs){
+            if(err){
+                throw err;
+            }
+            else{
+                var option_list = [];
+                if(docs.length){
+                    if(docs[0].option){
+                        if(docs[0].option.noPathRemove){
+                            option_list.push("noPathRemove");
+                        }
+                        if(docs[0].option.addClassID){
+                            option_list.push("addClassID");
+                        }
+                        if(docs[0].option.addStudentID){
+                            option_list.push("addStudentID");
+                        }
+                        if(docs[0].option.addRole){
+                            option_list.push("addRole");
+                        }
+                    }
+                }
+            }
+            resolve(option_list);
+        });
+    });
+}
 
 
-function parameterChange(req, res, next){
+
+async function parameterChange(req, res, next){
+    /*
+    var par;
+    if(req.originalUrl){
+        par = req.originalUrl.slice(1).split('/');
+    }
+    else{
+        par = req.url.slice(1).split('/');
+    }
+    var options = await option_search(req.session.decoded_launch.class_id,par[2]);
+    console.log(options);
+    */
+    //console.log(req.query);
     if("ealps_sid" in req.query){
         req.query.ealps_sid = req.session.decoded_launch.student_id;
+        //console.log(req.query);
     }
     if("ealps_cid" in req.query){
         req.query.ealps_cid = req.session.decoded_launch.class_id;
@@ -347,6 +391,7 @@ function parameterChange(req, res, next){
             req.query.ealps_role = "student";
         }
     }
+    //console.log(req.query);
     next();
 }
 

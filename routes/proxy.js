@@ -68,6 +68,20 @@ async function proxyDB(s_class,s_id,s_sid,role){
 }
 
 
+const updateQueryStringParameter = (path, key, value) => {
+  const re_n = new RegExp('([?&])' + key + '=.*?(&|$)', 'i');
+  const re_a = new RegExp('([?&])' + key + '(&|$)', 'i');
+  const separator = path.indexOf('?') !== -1 ? '&' : '?';
+  if (path.match(re_n)) {
+    return path.replace(re_n, '$1' + key + '=' + value + '$2');
+  } 
+  else if (path.match(re_a)){
+    return path.replace(re_a, '$1' + key + '=' + value + '$2');
+  }
+  else {
+    return path;
+  }
+};
 
 
 var options = {
@@ -110,13 +124,13 @@ var options = {
   pathRewrite: function (path, req) {
     var par = req.url.slice(1).split('/');
     return path.replace('/' + par[0] + '/' + par[1] + '/' + par[2], '');
+
   },
   ws: true,
   secure: false,
   changeOrigin: true,
   xfwd: true,
   onProxyRes: function (proxyRes, req, res) {
-
     proxyRes.headers['x-added'] = 'foobar';
     
     //const proxyCookie = proxyRes.headers['set-cookie'];
@@ -126,7 +140,19 @@ var options = {
     //}
   },
   onProxyReq: function(proxyReq, req, res){
-    //console.log(Object.keys(req));
+
+    proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_sid', req.session.decoded_launch.student_id);
+    proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_cid', req.session.decoded_launch.class_id);
+    if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator') != -1){
+      proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "admin");
+    }
+    else if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor') != -1){
+      proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "teacher");
+    }
+    else{
+      proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "student");
+    }
+    console.log(proxyReq.path);
     //proxyReq.setHeader('HOST', req.originalUrl);
   }
 };
@@ -134,3 +160,6 @@ var options = {
 const Proxy = createProxyMiddleware(options);
 
 module.exports = Proxy;
+
+
+

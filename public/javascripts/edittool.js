@@ -196,7 +196,6 @@ document.getElementById("save_button").onclick = function(){
             }
         }
 
-
         var json_text = JSON.stringify(json_asocc);
         
         //データを送信

@@ -33,6 +33,7 @@ async function proxyDB(s_class,s_id,s_sid,role){
   return new Promise((resolve, reject) => {
     collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
       var p_url = "";
+      var p_opt = {};
       if(err){
         throw err;
       }
@@ -60,9 +61,23 @@ async function proxyDB(s_class,s_id,s_sid,role){
               p_url = temp_url.protocol + "//" + temp_url.host;
             }
           }
+          if(docs[0].option){
+            if(docs[0].option.pathRewriteStudent){
+              p_opt.pathRewriteStudent = docs[0].option.pathRewriteStudent;
+            }
+            if(docs[0].option.pathRewriteClass){
+              p_opt.pathRewriteClass = docs[0].option.pathRewriteClass;
+            }
+            if(!Object.keys(p_opt).length){
+              p_opt = false;
+            }
+          }
+          else{
+            p_opt = false;
+          }
         }
       }
-      resolve(p_url);
+      resolve({ "url" : p_url, "option" : p_opt });
     });
   });
 }
@@ -83,6 +98,21 @@ const updateQueryStringParameter = (path, key, value) => {
   }
 };
 
+const updatePath = (path, keys, value) => {
+  var temp_url = path.split("?");
+  var path_url = temp_url[0].split("/");
+  for(key of keys){
+    for(let i = 0; i < path_url.length; i++){
+      if(path_url[i] == key){
+        path_url[i] = value;
+      }
+    }
+  }
+  
+  temp_url[0] = path_url.join("/");
+  return temp_url.join("?");
+};
+
 
 var options = {
   target: 'do-not-use',
@@ -97,9 +127,13 @@ var options = {
               par = req.session.decoded_launch.launch_tool_url.slice(1).split('/');
             }
             var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
-            var result_url = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check);   
+            var db_result = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check); 
+            var result_url = db_result.url;
             if(!result_url.length){
               throw "no_data"
+            }
+            else{
+              req.session.decoded_launch.options = db_result.option;
             }
             resolve(result_url);
           });
@@ -107,11 +141,15 @@ var options = {
       }
       else{
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
-        var result_url = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check);   
+        var db_result = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check);
+        var result_url = db_result.url; 
         req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + par[2];   
 
         if(!result_url.length){
           throw "no_data"
+        }
+        else{
+          req.session.decoded_launch.options = db_result.option;
         }
         return result_url;    
       }
@@ -152,6 +190,16 @@ var options = {
     else{
       proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "student");
     }
+
+    if(req.session.decoded_launch.options){
+      if("pathRewriteStudent" in req.session.decoded_launch.options){
+        proxyReq.path = updatePath(proxyReq.path, req.session.decoded_launch.options.pathRewriteStudent, req.session.decoded_launch.student_id);
+      }
+      if("pathRewriteClass" in req.session.decoded_launch.options){
+        proxyReq.path = updatePath(proxyReq.path, req.session.decoded_launch.options.pathRewriteClass, req.session.decoded_launch.class_id);
+      }
+    }
+
     console.log(proxyReq.path);
     //proxyReq.setHeader('HOST', req.originalUrl);
   }

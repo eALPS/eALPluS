@@ -53,6 +53,21 @@
             <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
             <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
             <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+
+            <div class="category_name">オプション</div>
+            <div class="option_name">指定パスを学籍番号に置換</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_single_optinon_resid" size="40">
+            </div>
+            <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/20w20~/・・・<br>複数ある場合は , 区切り</div>
+
+            <div class="option_name">指定パスを授業コードに置換</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_single_optinon_recid" size="40">
+            </div>
+            <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/TS80~/・・・<br>複数ある場合は , 区切り</div>
+
+
             <div id="tool_url_error" class="tool_add_error"></div>
           </div>
 
@@ -88,6 +103,20 @@
             <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
             <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
             <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+
+            <div class="category_name">オプション</div>
+            <div class="option_name">指定パスを学籍番号に置換</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_role_optinon_resid" size="40">
+            </div>
+            <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/20w20~/・・・<br>複数ある場合は , 区切り</div>
+
+            <div class="option_name">指定パスを授業コードに置換</div>
+            <div class="category_input">
+              <input type="text" class="category_input_text" name="tool_role_optinon_recid" size="40">
+            </div>
+            <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/TS80~/・・・<br>複数ある場合は , 区切り</div>
+
             <div id="role_url_error" class="tool_add_error"></div>
           </div>
 

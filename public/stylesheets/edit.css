@@ -95,6 +95,12 @@
     color: #000;
 }
 
+.option_name{
+    margin-top: 10px;
+    padding: 0 30px;
+    font-weight: bold;
+}
+
 .category_input span{
     display: block;
     font-size: 12px;

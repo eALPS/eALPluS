@@ -160,6 +160,9 @@ router.post('/:class/AddTool', function(req, res, next){
                 else{
                     temp_data.route_list = req.body.route_list;
                 }
+                if(req.body.option){
+                    temp_data.option = req.body.option;
+                }
 
                 var save_class = new collection_class(temp_data);
 
@@ -256,11 +259,18 @@ router.post('/:class/EditTool', function(req, res, next){
                 temp_data.tool_id = req.body.tool_id;
                 temp_data.tool_name = req.body.tool_name;
                 temp_data.route_mode = req.body.route_mode;
+                if(req.body.option){
+                    temp_data.option = req.body.option;
+                }
+                else{
+                    temp_data.option = {};
+                }
+
                 if(req.body.route_url){
                     temp_data.route_url = req.body.route_url;
 
                     collection_class.updateOne( { class : req.params.class , tool_id : req.body.tool_id }, 
-                    { $set: { tool_name: temp_data.tool_name, route_mode: req.body.route_mode, route_url: temp_data.route_url} },
+                    { $set: { tool_name: temp_data.tool_name, route_mode: req.body.route_mode, route_url: temp_data.route_url, option: temp_data.option} },
                     function(err) {
                         if(err){
                             console.log(err);
@@ -274,7 +284,7 @@ router.post('/:class/EditTool', function(req, res, next){
                     temp_data.route_list = req.body.route_list;
 
                     collection_class.updateOne( { class : req.params.class , tool_id : req.body.tool_id }, 
-                    { $set: { tool_name: temp_data.tool_name, route_mode: req.body.route_mode, route_list: temp_data.route_list} },
+                    { $set: { tool_name: temp_data.tool_name, route_mode: req.body.route_mode, route_list: temp_data.route_list,option: temp_data.option} },
                     function(err) {
                         if(err){
                             console.log(err);

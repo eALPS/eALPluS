@@ -147,12 +147,16 @@ function page_change(){
         document.getElementById('back_button').classList.add("display_off");
 
         var json_asocc = {};
+        var resid_option = [];
+        var recid_option = [];
 
         json_asocc.tool_id = document.getElementsByName("tool_id")[0].value;
         json_asocc.tool_name = document.getElementsByName("tool_name")[0].value;
         if(document.getElementsByName("proxy_rule")[0].checked){
             json_asocc.route_mode = "single";
             json_asocc.route_url = document.getElementsByName("tool_url")[0].value;
+            resid_option = document.getElementsByName("tool_single_optinon_resid")[0].value.split(",");
+            recid_option = document.getElementsByName("tool_single_optinon_recid")[0].value.split(",");
         }
         else if(document.getElementsByName("proxy_rule")[1].checked){
             json_asocc.route_mode = "multi";
@@ -169,8 +173,19 @@ function page_change(){
             json_asocc.route_list = {};
             json_asocc.route_list.teacher = document.getElementsByName("role_teacher_url")[0].value;
             json_asocc.route_list.student = document.getElementsByName("role_student_url")[0].value;
+            resid_option = document.getElementsByName("tool_role_optinon_resid")[0].value.split(",");
+            recid_option = document.getElementsByName("tool_role_optinon_recid")[0].value.split(",");
         }
 
+        if(resid_option.length || recid_option.length){
+            json_asocc.option = {};
+            if(resid_option.length){
+                json_asocc.option.pathRewriteStudent = resid_option;
+            }
+            if(recid_option.length){
+                json_asocc.option.pathRewriteClass = recid_option;
+            }
+        }
 
         var json_text = JSON.stringify(json_asocc);
     

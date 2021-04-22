@@ -102,9 +102,11 @@ const updatePath = (path, keys, value) => {
   var temp_url = path.split("?");
   var path_url = temp_url[0].split("/");
   for(key of keys){
-    for(let i = 0; i < path_url.length; i++){
-      if(path_url[i] == key){
-        path_url[i] = value;
+    if(key.length){
+      for(let i = 0; i < path_url.length; i++){
+        if(path_url[i] == key){
+          path_url[i] = value;
+        }
       }
     }
   }
@@ -181,6 +183,7 @@ var options = {
 
     proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_sid', req.session.decoded_launch.student_id);
     proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_cid', req.session.decoded_launch.class_id);
+    
     if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/institution/person#Administrator') != -1){
       proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "admin");
     }
@@ -190,7 +193,7 @@ var options = {
     else{
       proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "student");
     }
-
+    
     if(req.session.decoded_launch.options){
       if("pathRewriteStudent" in req.session.decoded_launch.options){
         proxyReq.path = updatePath(proxyReq.path, req.session.decoded_launch.options.pathRewriteStudent, req.session.decoded_launch.student_id);
@@ -199,8 +202,6 @@ var options = {
         proxyReq.path = updatePath(proxyReq.path, req.session.decoded_launch.options.pathRewriteClass, req.session.decoded_launch.class_id);
       }
     }
-
-    console.log(proxyReq.path);
     //proxyReq.setHeader('HOST', req.originalUrl);
   }
 };

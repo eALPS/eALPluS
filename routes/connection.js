@@ -106,6 +106,21 @@ router.get('/:class/Tool', function(req, res, next) {
                             res.render('error', {"error":"ツールの読み込みに失敗しました"});
                         } 
                     }
+                    else if(docs[0].route_mode == "dynamic"){
+                        try{
+                            try{
+                                var t_url = url.parse(docs[0].route_url);
+                                req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
+                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + "/"});
+                            }
+                            catch(e){
+                                res.render('error', {"error":"ツールの読み込みに失敗しました"});
+                            }
+                        }
+                        catch(e){
+                            res.render('error', {"error":"ツールの読み込みに失敗しました"});
+                        } 
+                    }
                 }
                 else{
                     res.render('error', {"error":"ツールが存在しません"});

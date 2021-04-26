@@ -22,16 +22,25 @@ function page_list_change(){
         document.getElementById("single_mode").classList.add("display_on");
         document.getElementById("role_mode").classList.remove("display_on");
         document.getElementById("multi_mode").classList.remove("display_on");
+        document.getElementById("dynamic_mode").classList.remove("display_on");
     }
     else if(document.getElementById("multi").checked){
         document.getElementById("single_mode").classList.remove("display_on");
         document.getElementById("role_mode").classList.remove("display_on");
         document.getElementById("multi_mode").classList.add("display_on");
+        document.getElementById("dynamic_mode").classList.remove("display_on");
     }
     else if(document.getElementById("role").checked){
         document.getElementById("single_mode").classList.remove("display_on");
         document.getElementById("multi_mode").classList.remove("display_on");
         document.getElementById("role_mode").classList.add("display_on");
+        document.getElementById("dynamic_mode").classList.remove("display_on");
+    }
+    else if(document.getElementById("dynamic").checked){
+        document.getElementById("single_mode").classList.remove("display_on");
+        document.getElementById("multi_mode").classList.remove("display_on");
+        document.getElementById("role_mode").classList.remove("display_on");
+        document.getElementById("dynamic_mode").classList.add("display_on");
     }
 }
 
@@ -185,6 +194,13 @@ document.getElementById("save_button").onclick = function(){
             resid_option = document.getElementsByName("tool_role_optinon_resid")[0].value.split(",");
             recid_option = document.getElementsByName("tool_role_optinon_recid")[0].value.split(",");
         }
+        else if(document.getElementsByName("proxy_rule")[3].checked){
+            json_asocc.route_mode = "dynamic";
+            json_asocc.route_list = {};
+            json_asocc.route_url = document.getElementsByName("dynamic_search_url")[0].value;
+            resid_option = document.getElementsByName("tool_dynamic_optinon_resid")[0].value.split(",");
+            recid_option = document.getElementsByName("tool_dynamic_optinon_recid")[0].value.split(",");
+        }
 
         if(resid_option.length || recid_option.length){
             json_asocc.option = {};
@@ -197,6 +213,7 @@ document.getElementById("save_button").onclick = function(){
         }
 
         var json_text = JSON.stringify(json_asocc);
+        console.log(json_text);
         
         //データを送信
         xhr = new XMLHttpRequest;

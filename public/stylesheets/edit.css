@@ -255,7 +255,14 @@ input[name="proxy_rule"]{
     background-image: url("../images/proxy_rule_role.png");
     background-size: 100px 125px;
     background-repeat: no-repeat;
-    background-position: center center;
+    background-position: bottom 10px center;
+}
+
+.dynamic_img{
+    background-image: url("../images/proxy_rule_dynamic.png");
+    background-size: 100px 125px;
+    background-repeat: no-repeat;
+    background-position: bottom 10px center;
 }
 
 #route_table{

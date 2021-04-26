@@ -4,6 +4,7 @@ var express = require('express');
 var router = express.Router();
 
 const url = require("url");
+const request = require('request');
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo')(session);
@@ -29,6 +30,51 @@ router.use(LTIsessionMiddleware);
 
 
 
+async function proxyAPI(s_class,s_id,s_sid,role,s_url,opt){
+
+  return new Promise((resolve, reject) => {
+    s_url = updateQueryStringParameter(s_url, 'ealps_sid', s_sid);
+    s_url = updateQueryStringParameter(s_url, 'ealps_cid', s_class);
+
+    if(role != -1){
+      s_url = updateQueryStringParameter(s_url, 'ealps_role', "teacher");
+    }
+    else{
+      s_url = updateQueryStringParameter(s_url, 'ealps_role', "student");
+    }
+
+    if(opt){
+      if("pathRewriteStudent" in opt){
+        s_url = updatePath(s_url, opt.pathRewriteStudent, s_sid);
+      }
+      if("pathRewriteClass" in opt){
+        s_url = updatePath(s_url, opt.pathRewriteClass, s_class);
+      }
+    }
+    console.log(s_url);
+
+    request.get({
+      uri: s_url
+    }, 
+    function(err, req, data){
+      if(!err){
+        var IpPort = JSON.parse(data);
+        if("ip" in IpPort && "port" in IpPort){
+          resolve({ "url" : "http://" + IpPort.ip + ":" + IpPort.port, "option" : opt });
+        }
+        else{
+          resolve({ "err" : data });
+        }
+      }
+      else{
+        throw err;
+      }
+    });
+  });
+}
+
+
+
 async function proxyDB(s_class,s_id,s_sid,role){
   return new Promise((resolve, reject) => {
     collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
@@ -39,6 +85,7 @@ async function proxyDB(s_class,s_id,s_sid,role){
       }
       else{
         if(docs.length){
+          
           if(docs[0].route_mode == "single"){
             var temp_url = url.parse(docs[0].route_url);
             
@@ -74,6 +121,10 @@ async function proxyDB(s_class,s_id,s_sid,role){
           }
           else{
             p_opt = false;
+          }
+          if(docs[0].route_mode == "dynamic"){  
+            p_url = docs[0].route_url;
+            resolve({ "url" : p_url, "option" : p_opt, "dynamic" : true});
           }
         }
       }
@@ -130,6 +181,12 @@ var options = {
             }
             var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
             var db_result = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check); 
+            if("dynamic" in db_result){
+              var db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+              if("err" in db_result){
+                throw db_result.err
+              }
+            }
             var result_url = db_result.url;
             if(!result_url.length){
               throw "no_data"
@@ -144,6 +201,12 @@ var options = {
       else{
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
         var db_result = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check);
+        if("dynamic" in db_result){
+          var db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+          if("err" in db_result){
+            throw db_result.err
+          }
+        }
         var result_url = db_result.url; 
         req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + par[2];   
 

@@ -1,4 +1,4 @@
-var page_list = ["1","2","3","6"];
+var page_list = ["1","2","3","7"];
 var now_page = 0;
 var route_len = 0;
 
@@ -125,6 +125,16 @@ document.getElementById("next_button").onclick = function(){
                 document.getElementById("role_url_error").textContent="";
             }
         }
+        else if(document.getElementsByName("proxy_rule")[3].checked){
+            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
+            if(!reg.test(document.getElementsByName("dynamic_search_url")[0].value)){
+                checke_flag = false;
+                document.getElementById("dynamic_url_error").textContent="正しいURLを入力してください";
+            }
+            else{
+                document.getElementById("dynamic_url_error").textContent="";
+            }
+        }
     }
 
 
@@ -176,6 +186,13 @@ function page_change(){
             resid_option = document.getElementsByName("tool_role_optinon_resid")[0].value.split(",");
             recid_option = document.getElementsByName("tool_role_optinon_recid")[0].value.split(",");
         }
+        else if(document.getElementsByName("proxy_rule")[3].checked){
+            json_asocc.route_mode = "dynamic";
+            json_asocc.route_list = {};
+            json_asocc.route_url = document.getElementsByName("dynamic_search_url")[0].value;
+            resid_option = document.getElementsByName("tool_dynamic_optinon_resid")[0].value.split(",");
+            recid_option = document.getElementsByName("tool_dynamic_optinon_recid")[0].value.split(",");
+        }
 
         if(resid_option.length || recid_option.length){
             json_asocc.option = {};
@@ -210,8 +227,11 @@ function page_list_change(){
     else if(document.getElementById("multi").checked){
         page_list[2] = "4";
     }
-    else{
+    else if(document.getElementById("role").checked){
         page_list[2] = "5";
+    }
+    else{
+        page_list[2] = "6";
     }
 }
 

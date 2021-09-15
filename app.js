@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const morgan = require("morgan");
 const path = require('path');
 const logger = require('./tool/log');
@@ -16,6 +17,8 @@ app.use(favicon(__dirname + '/public/images/favicon.ico'));
 //app.use(express.text());
 //app.use(express.urlencoded({ extended: true }));
 
+app.use(cors());
+
 app.use( (req,res,next) => {
   res.locals.formData = null;
   next();
@@ -23,9 +26,10 @@ app.use( (req,res,next) => {
 
 
 function sessionCheck(req, res, next) {
+  
   if (req.session.decoded_launch) {
     if( !req.session.decoded_launch.student_id || !req.session.decoded_launch.class_id){
-        if(req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext']){
+        if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext']){
             if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext'].user_username){
                 req.session.decoded_launch.student_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/ext'].user_username
             }
@@ -36,13 +40,23 @@ function sessionCheck(req, res, next) {
         else{
             req.session.decoded_launch.student_id = req.session.decoded_launch.email.split('@')[0];
         }
-        req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid;
-        logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","login");
+        if(req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid){
+          req.session.decoded_launch.class_id = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/lis'].course_section_sourcedid;
+          logger.log(req.session.decoded_launch.class_id,req.session.decoded_launch.student_id,"eALPluS","login");
+        }
+        else{
+          
+        }
+        
     }
-
-    next();
-  } else {
-    console.log("ya");
+    if( req.session.decoded_launch.student_id && req.session.decoded_launch.class_id){
+      next();
+    }
+    else{
+      res.render('error', {"error":"学籍番号・授業コードが読み取れませんでした"});
+    }
+  }
+  else {
     res.redirect('/unauthenticated');
   }
 };

@@ -21,17 +21,22 @@ const { prep_send_score, send_score } = require("../node_modules/lti-node-librar
 const { grade_project } = require("../tool/grading_tool");
 
 
-
+//secure: true,
 var sessionMiddleware = session({
   name: 'lti_v1p3_library',
   secret: 'iualcoelknasfnk',
   saveUninitialized: true,
   resave: true,
-  secure: true,
+  proxy: true,
+  cookie : {
+    sameSite: false,
+    httpOnly: true,
+    secure: false
+  },
   ephemeral: true,
-  httpOnly: true,
   store: new MongoStore({ mongooseConnection: mongodb.connection })
 });
+
 router.session = sessionMiddleware;
 router.use(sessionMiddleware);
 
@@ -78,7 +83,6 @@ router.post('/auth_code', (req, res) => {
 });
 
 router.post("/submit", (req, res) => {
- 
   launchTool(req, res, '/connection/');
 });
 

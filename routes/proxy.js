@@ -12,6 +12,7 @@ const MongoStore = require('connect-mongo')(session);
 
 
 var mongodb = require('../tool/db_connection');
+const { error } = require('console');
 const collection_class = mongodb.collection_class;
 
 
@@ -51,7 +52,7 @@ async function proxyAPI(s_class,s_id,s_sid,role,s_url,opt){
         s_url = updatePath(s_url, opt.pathRewriteClass, s_class);
       }
     }
-    console.log(s_url);
+    //console.log(s_url);
 
     request.get({
       uri: s_url
@@ -177,7 +178,8 @@ var options = {
             router.session(req , {},async() =>{
             var par = req.url.slice(1).split('/');
             if(par[0] !== "connection"){
-              par = req.session.decoded_launch.launch_tool_url.slice(1).split('/');
+              par = req.session.decoded_launch.launch_tool_url.slice(1).split('/').concat(par)
+              req.url = "/" + par.join("/")
             }
             var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
             var db_result = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check); 
@@ -226,15 +228,18 @@ var options = {
   },
   pathRewrite: function (path, req) {
     var par = req.url.slice(1).split('/');
+    
+    if(par[0] !== "connection"){
+      par = req.session.decoded_launch.launch_tool_url.slice(1).split('/')
+    }
     return path.replace('/' + par[0] + '/' + par[1] + '/' + par[2], '');
-
   },
   ws: true,
   secure: false,
   changeOrigin: true,
   xfwd: true,
   onProxyRes: function (proxyRes, req, res) {
-    proxyRes.headers['x-added'] = 'foobar';
+    //proxyRes.headers['x-added'] = 'foobar';
     
     //const proxyCookie = proxyRes.headers['set-cookie'];
     //if (proxyCookie) {
@@ -243,7 +248,6 @@ var options = {
     //}
   },
   onProxyReq: function(proxyReq, req, res){
-
     proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_sid', req.session.decoded_launch.student_id);
     proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_cid', req.session.decoded_launch.class_id);
     
@@ -256,6 +260,7 @@ var options = {
     else{
       proxyReq.path = updateQueryStringParameter(proxyReq.path, 'ealps_role', "student");
     }
+  
     
     if(req.session.decoded_launch.options){
       if("pathRewriteStudent" in req.session.decoded_launch.options){
@@ -266,6 +271,18 @@ var options = {
       }
     }
     //proxyReq.setHeader('HOST', req.originalUrl);
+
+    
+    proxyReq.setHeader('Host', req.headers['host'])
+    proxyReq.setHeader('X-Forwarded-For', req.connection.remoteAddress)
+    proxyReq.setHeader('X-Real-IP', req.connection.remoteAddress)
+
+  },
+  onProxyReqWs: function(proxyReq, req, res){
+    proxyReq.setHeader('Host', req.headers['host'])
+    proxyReq.setHeader('X-Forwarded-For', req.connection.remoteAddress)
+    proxyReq.setHeader('X-Real-IP', req.connection.remoteAddress)
+    //console.log(proxyReq)
   }
 };
 

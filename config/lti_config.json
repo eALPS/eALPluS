@@ -1,6 +1,6 @@
 {
     "send_domain" : "http://192.168.10.161/moodle" ,
-    "receive_domain" : "http://192.168.10.162:3000" ,
-    "lms_name" : "moodle",
+    "receive_domain" : "http://192.168.10.162:3001" ,
+    "lms_name" : "test",
     "secret_key" : "dmCFJ45VBRKKAOo"
 }

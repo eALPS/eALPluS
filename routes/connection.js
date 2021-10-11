@@ -176,7 +176,7 @@ router.post('/:class/AddTool', function(req, res, next){
                     temp_data.route_list = req.body.route_list;
                 }
                 if(req.body.route_mode == "dynamic"){
-                    temp_data.route_list = {"dynamic_list_dummy":""}
+                    temp_data.route_list = {"dynamic_list_dummy":"http://127.0.0.1"}
                 }
                 if(req.body.option){
                     temp_data.option = req.body.option;

@@ -63,7 +63,7 @@ router.get('/:class/Tool', function(req, res, next) {
                         try{
                             var t_url = url.parse(docs[0].route_url);
                             req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
-                            res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});
+                            res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path, "tool_name": docs[0].tool_name});
                         }
                         catch(e){
                             res.render('error', {"error":"ツールの読み込みに失敗しました"});
@@ -74,7 +74,7 @@ router.get('/:class/Tool', function(req, res, next) {
                             if(docs[0].route_list[req.session.decoded_launch.student_id]){
                                 var t_url = url.parse(docs[0].route_list[req.session.decoded_launch.student_id]);
                                 req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
-                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});
+                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path, "tool_name": docs[0].tool_name});
                             }
                             else{
                                 res.render('error', {"error":"ルーティングルールが存在しません"});
@@ -90,12 +90,12 @@ router.get('/:class/Tool', function(req, res, next) {
                                 if(role_check != -1){
                                     var t_url = url.parse(docs[0].route_list.teacher);
                                     req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;
-                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});  
+                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path, "tool_name": docs[0].tool_name});  
                                 }
                                 else{
                                     var t_url = url.parse(docs[0].route_list.student);
                                     req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;
-                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path});  
+                                    res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + t_url.path, "tool_name": docs[0].tool_name});  
                                 }    
                             }
                             else{
@@ -111,7 +111,7 @@ router.get('/:class/Tool', function(req, res, next) {
                             try{
                                 var t_url = url.parse(docs[0].route_url);
                                 req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
-                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + "/?ipp_search=true"});
+                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + "/?ipp_search=true", "tool_name": docs[0].tool_name});
                             }
                             catch(e){
                                 res.render('error', {"error":"ツールの読み込みに失敗しました"});

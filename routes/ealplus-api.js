@@ -55,7 +55,7 @@ router.post('/tool_terminate', function(req, res, next) {
 
 router.post('/tool_view_page', function(req, res, next) {
   if(req.body.class == req.session.decoded_launch.class_id){
-    logger.log(req.body.class,req.session.decoded_launch.student_id,req.body.tool_id,"terminate");
+    logger.log(req.body.class,req.session.decoded_launch.student_id,req.body.tool_id,"view_page " + req.body.page);
     res.status(200).send();
   }
   else{

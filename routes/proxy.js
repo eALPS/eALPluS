@@ -61,7 +61,19 @@ async function proxyAPI(s_class,s_id,s_sid,role,s_url,opt){
       if(!err){
         var IpPort = JSON.parse(data);
         if("ip" in IpPort && "port" in IpPort){
-          resolve({ "url" : "http://" + IpPort.ip + ":" + IpPort.port, "option" : opt });
+          collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
+            docs[0].route_list[s_sid] = "http://" + IpPort.ip + ":" + IpPort.port;
+            collection_class.updateOne( { class : s_class , tool_id : s_id }, 
+              { $set: { route_list: docs[0].route_list} },
+                function(err) {
+                  if(err){
+                    console.log(err);
+
+                  }
+                  resolve({ "url" : "http://" + IpPort.ip + ":" + IpPort.port, "option" : opt });
+                }
+            );
+          });
         }
         else{
           resolve({ "err" : data });
@@ -80,6 +92,7 @@ async function proxyDB(s_class,s_id,s_sid,role){
   return new Promise((resolve, reject) => {
     collection_class.find({ class: s_class, tool_id : s_id}, function(err, docs){
       var p_url = "";
+      var d_url = "";
       var p_opt = {};
       if(err){
         throw err;
@@ -125,7 +138,10 @@ async function proxyDB(s_class,s_id,s_sid,role){
           }
           if(docs[0].route_mode == "dynamic"){  
             p_url = docs[0].route_url;
-            resolve({ "url" : p_url, "option" : p_opt, "dynamic" : true});
+            if(s_sid in docs[0].route_list){
+              d_url = docs[0].route_list[s_sid]
+            }
+            resolve({ "url" : p_url, "durl" : d_url, "option" : p_opt, "dynamic" : true});
           }
         }
       }
@@ -173,7 +189,9 @@ var options = {
   router:async function(req){
     try {
       var par = req.url.slice(1).split('/');
+      //console.log(req.headers)
       if(req.headers.upgrade == "websocket"){
+        
         return new Promise((resolve, reject) => {
             router.session(req , {},async() =>{
             var par = req.url.slice(1).split('/');
@@ -184,7 +202,12 @@ var options = {
             var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
             var db_result = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check); 
             if("dynamic" in db_result){
-              var db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+              if(!db_result.durl.length){
+                var db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+              }
+              else{
+                db_result.url = db_result.durl
+              }
               if("err" in db_result){
                 throw db_result.err
               }
@@ -204,7 +227,15 @@ var options = {
         var role_check = req.session.decoded_launch['https://purl.imsglobal.org/spec/lti/claim/roles'].indexOf('http://purl.imsglobal.org/vocab/lis/v2/membership#Instructor');
         var db_result = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check);
         if("dynamic" in db_result){
-          var db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+          if( "ipp_search" in req.query){
+            db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+          }
+          else if(!db_result.durl.length){
+            db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option);
+          }
+          else{
+            db_result.url = db_result.durl
+          }
           if("err" in db_result){
             throw db_result.err
           }
@@ -222,7 +253,7 @@ var options = {
       }
     }
     catch (e) {
-      console.log("proxy_error");
+      console.log(e);
       throw e;
     }
   },

@@ -111,7 +111,7 @@ router.get('/:class/Tool', function(req, res, next) {
                             try{
                                 var t_url = url.parse(docs[0].route_url);
                                 req.session.decoded_launch.launch_tool_url = "/connection/" + req.session.decoded_launch.class_id + "/" + s_id;   
-                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + "/"});
+                                res.render('tool', {"tool_url": "/connection/" + req.params.class + "/" + s_id + "/?ipp_search=true"});
                             }
                             catch(e){
                                 res.render('error', {"error":"ツールの読み込みに失敗しました"});
@@ -174,6 +174,9 @@ router.post('/:class/AddTool', function(req, res, next){
                 }
                 else{
                     temp_data.route_list = req.body.route_list;
+                }
+                if(req.body.route_mode == "dynamic"){
+                    temp_data.route_list = {"dynamic_list_dummy":""}
                 }
                 if(req.body.option){
                     temp_data.option = req.body.option;

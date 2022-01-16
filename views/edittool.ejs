@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>eALPluS</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <link rel='stylesheet' href='/ealplus-public/stylesheets/style.css'/>
     <link rel='stylesheet' href='/ealplus-public/stylesheets/edit.css'/>
+    <link rel='stylesheet' href='/ealplus-public/stylesheets/log.css'/>
   </head>
   <body>
     <div class="container">
@@ -19,11 +21,11 @@
       </div>
       <div class="main_contents">
         <div class="menu_bar">
-          <div id="tool_info_tab">ツール情報</div>
+          <div id="tool_info_tab" class="info_tab_on">ツール情報</div>
           <div id="log_info_tab">ログ情報</div>
         </div>
         <div class="info_contents">
-          <div id="tool_info_contents">
+          <div id="tool_info_contents" class="info_contens_off display_on">
             <div class="category">
               <div class="category_name">ツール名</div>
               <div class="category_input">
@@ -45,6 +47,10 @@
                 <label class="tab_item single_img" for="single">シングル</label>
                 <input id="multi" type="radio" name="proxy_rule" value="multi" onchange="page_list_change()" <% if (tool.route_mode == "multi") { %> checked <% } %>>
                 <label class="tab_item multi_img" for="multi">マルチ</label>
+                <input id="role" type="radio" name="proxy_rule" value="role" onchange="page_list_change()" <% if (tool.route_mode == "role") { %> checked <% } %>>
+                <label class="tab_item role_img" for="role">ロール</label>
+                <input id="dynamic" type="radio" name="proxy_rule" value="dynamic" onchange="page_list_change()" <% if (tool.route_mode == "dynamic") { %> checked <% } %>>
+                <label class="tab_item dynamic_img" for="dynamic">ダイナミック</label>
               </div>
             </div>
 
@@ -57,6 +63,21 @@
     
                 <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
                 <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+                <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+
+                <div class="category_name">オプション</div>
+                <div class="option_name">指定パスを学籍番号に置換</div>
+                <div class="category_input">
+                  <input type="text" class="category_input_text" name="tool_single_optinon_resid" size="40"<% if (tool.route_mode == "single") { %>value = <%= tool.option.pathRewriteStudent %><% } %>>
+                </div>
+                <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/20w20~/・・・<br>複数ある場合は , 区切り</div>
+
+                <div class="option_name">指定パスを授業コードに置換</div>
+                <div class="category_input">
+                  <input type="text" class="category_input_text" name="tool_single_optinon_recid" size="40"<% if (tool.route_mode == "single") { %>value = <%= tool.option.pathRewriteClass %><% } %>>
+                </div>
+                <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/TS80~/・・・<br>複数ある場合は , 区切り</div>
+
                 <div id="tool_url_error" class="tool_edit_error"></div>
               </div>
 
@@ -80,7 +101,7 @@
                     <% } %>
                   <% } %>
                 </table>
-                <div id="add_tb">+</div>
+                <div id="add_route">+</div>
                 <div class="csv_load_button_area">
                   <label class="csv_load_button" for="csv_load">
                     CSVファイルの読み込み
@@ -89,6 +110,104 @@
                 </div>
                 <div id="route_table_error" class="tool_edit_error"></div>
               </div>
+            </div>
+
+            <div id="role_mode" class="route_mode<% if (tool.route_mode == "role") { %> display_on<% } %>">
+              <div class="category_name">教師ツールURL</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="role_teacher_url" size="40" <% if (tool.route_mode == "role") { %>value = <%= tool.route_list.teacher  %><% } %>>
+              </div>
+              <div class="category_name">学生ツールURL</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="role_student_url" size="40" <% if (tool.route_mode == "role") { %>value = <%= tool.route_list.student %><% } %>>
+              </div>
+  
+              <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
+              <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+              <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+
+              <div class="category_name">オプション</div>
+              <div class="option_name">指定パスを学籍番号に置換</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_role_optinon_resid" size="40"<% if (tool.route_mode == "role") { %>value = <%= tool.option.pathRewriteStudent %><% } %>>
+              </div>
+              <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/20w20~/・・・<br>複数ある場合は , 区切り</div>
+
+              <div class="option_name">指定パスを授業コードに置換</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_role_optinon_recid" size="40"<% if (tool.route_mode == "role") { %>value = <%= tool.option.pathRewriteClass %><% } %>>
+              </div>
+              <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/TS80~/・・・<br>複数ある場合は , 区切り</div>
+
+              <div id="role_url_error" class="tool_add_error"></div>
+            </div>
+
+            <div id="dynamic_mode" class="route_mode<% if (tool.route_mode == "dynamic") { %> display_on<% } %>">
+              <div class="category_name">接続先探索URL</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="dynamic_search_url" size="40" <% if (tool.route_mode == "dynamic") { %>value = <%= tool.route_url %><% } %>>
+              </div>
+              <div class="category_info">探索結果の返り値は{"ip":[ip-address],"port":[port]}にしてください<br> <br></div>
+
+  
+              <div class="category_info">パラメータealps_sidを挿入するとproxy時に学籍番号が追加されます<br>例：http://abc.com?ealps_sid&・・・</div>
+              <div class="category_info">パラメータealps_cidを挿入するとproxy時に授業コードが追加されます<br>例：http://abc.com?ealps_cid&・・・</div>
+              <div class="category_info">パラメータealps_roleを挿入するとproxy時にロール情報が追加されます<br>例：http://abc.com?ealps_role&・・・</div>
+
+              <div class="category_name">オプション</div>
+              <div class="option_name">指定パスを学籍番号に置換</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_dynamic_optinon_resid" size="40"<% if (tool.route_mode == "dynamic") { %>value = <%= tool.option.pathRewriteStudent %><% } %>>
+              </div>
+              <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/20w20~/・・・<br>複数ある場合は , 区切り</div>
+
+              <div class="option_name">指定パスを授業コードに置換</div>
+              <div class="category_input">
+                <input type="text" class="category_input_text" name="tool_dynamic_optinon_recid" size="40"<% if (tool.route_mode == "dynamic") { %>value = <%= tool.option.pathRewriteClass %><% } %>>
+              </div>
+              <div class="category_info">例(hogeを指定)：http://abc.com/hoge/・・・ ⇒ http://abc.com/TS80~/・・・<br>複数ある場合は , 区切り</div>
+
+              <div id="dynamic_url_error" class="tool_add_error"></div>
+            </div>
+
+            <div class="category">
+              <div class="category_name">リクエストヘッダの追加</div>
+              <table id="reqheader_table">
+                <tr>
+                  <th class="del_td"></th>
+                  <th class="student_number_td">ヘッダ</th>
+                  <th class="tool_url_td">値</th>
+                </tr>
+                <% if (tool.option.reqheader) { %>  
+                  <% for( const header in tool.option.reqheader ){ %> 
+                    <tr>
+                      <td><input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" /></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= header %>"></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= tool.option.reqheader[header] %>"></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </table>
+              <div id="add_reqheader">+</div>
+  
+              <div class="category_name">レスポンスヘッダの追加</div>
+              <table id="resheader_table">
+                <tr>
+                  <th class="del_td"></th>
+                  <th class="student_number_td">ヘッダ</th>
+                  <th class="tool_url_td">値</th>
+                </tr>
+                <% if (tool.option.resheader) { %>  
+                  <% for( const header in tool.option.resheader ){ %> 
+                    <tr>
+                      <td><input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" /></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= header %>"></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= tool.option.resheader[header] %>"></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </table>
+              <div id="add_resheader">+</div>
             </div>
 
             <div class="category">
@@ -104,12 +223,158 @@
             
             
           </div>
-          <div id="log_info_contents">
+          <div id="log_info_contents" class="info_contens_off">
+            <div class="category">
+              <div class="category_name">デフォルト収集ログ設定</div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">ツール起動ログ</div>
+                <input id="launch_true" type="radio" name="launch_status" value="true">
+                <label class="tab_item" for="launch_true">有効</label>
+                <input id="launch_false" type="radio" name="launch_status" value="false" checked>
+                <label class="tab_item" for="launch_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">アクセスログ</div>
+                <input id="access_true" type="radio" name="access_status" value="true">
+                <label class="tab_item" for="access_true">有効</label>
+                <input id="access_false" type="radio" name="access_status" value="false" checked>
+                <label class="tab_item" for="access_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">タブ状態ログ</div>
+                <input id="tab_true" type="radio" name="tab_status" value="true">
+                <label class="tab_item" for="tab_true">有効</label>
+                <input id="tab_false" type="radio" name="tab_status" value="false" checked>
+                <label class="tab_item" for="tab_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">ツール終了ログ</div>
+                <input id="terminate_true" type="radio" name="terminate_status" value="true">
+                <label class="tab_item" for="terminate_true">有効</label>
+                <input id="terminate_false" type="radio" name="terminate_status" value="false" checked>
+                <label class="tab_item" for="terminate_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">キー入力ログ</div>
+                <input id="key_true" type="radio" name="key_status" value="true">
+                <label class="tab_item" for="key_true">有効</label>
+                <input id="key_false" type="radio" name="key_status" value="false" checked>
+                <label class="tab_item" for="key_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">クッリクログ</div>
+                <input id="click_true" type="radio" name="click_status" value="true">
+                <label class="tab_item" for="click_true">有効</label>
+                <input id="click_false" type="radio" name="click_status" value="false" checked>
+                <label class="tab_item" for="click_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">スクロールログ</div>
+                <input id="scroll_true" type="radio" name="scroll_status" value="true">
+                <label class="tab_item" for="scroll_true">有効</label>
+                <input id="scroll_false" type="radio" name="scroll_status" value="false" checked>
+                <label class="tab_item" for="scroll_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">コピーログ</div>
+                <input id="copy_true" type="radio" name="copy_status" value="true">
+                <label class="tab_item" for="copy_true">有効</label>
+                <input id="copy_false" type="radio" name="copy_status" value="false" checked>
+                <label class="tab_item" for="copy_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">カットログ</div>
+                <input id="cut_true" type="radio" name="cut_status" value="true">
+                <label class="tab_item" for="cut_true">有効</label>
+                <input id="cut_false" type="radio" name="cut_status" value="false" checked>
+                <label class="tab_item" for="cut_false">無効</label>
+              </div>
+              
+              <div class="category_radio convert_radio">
+                <div class="log_name">ペーストログ</div>
+                <input id="paste_true" type="radio" name="paste_status" value="true">
+                <label class="tab_item" for="paste_true">有効</label>
+                <input id="paste_false" type="radio" name="paste_status" value="false" checked>
+                <label class="tab_item" for="paste_false">無効</label>
+              </div>
+            </div>
+
+            <div class="category">
+              <div class="category_name">ログ変換リスト</div>
+              <div class="config_rulu_header">
+                <div class="config_rulu_info">
+                  <div class="config_rulu_info_text">検索ログメッセージ</div>
+                  <div class="config_rulu_info_text">変換先行動</div>
+                  <div class="config_rulu_info_text">ターゲット指定</div>
+                  <div class="config_rulu_info_text">優先度
+                  </div>
+                </div>
+              </div>
+              <div class="convert_rulu_list">
+                <div id="dasefdsfse" class="config_rulu">
+                  <div class="config_rulu_info" onclick="open_convert_config('dasefdsfse')">
+                    <div class="config_rulu_info_text">save</div>
+                    <div class="config_rulu_info_text">保存した</div>
+                    <div class="config_rulu_info_text">動的</div>
+                    <div class="config_rulu_info_text">最高</div>
+                  </div>
+                  <div class="edit_config_rulu">
+                    <div class="category">
+                      <div class="category_input">
+                        <div class="category_name">検索ログメッセージ</div>
+                        <input type="text" name="dasefdsfse_search_word" class="category_input_text" size="40" value="<%= tool.tool_name %>">
+                      </div>
+                    </div>
+                    <div class="category">  
+                      <div class="category_name">変換先行動</div>
+                      <table class="convert_do_list">    
+                        <tr>
+                          <td class="convert_do_category">共通</td>
+                          <td>
+                            <div class="convert_do_checkbox"><input type="checkbox" name="dasefdsfse_convert_do" value="1"><span onclick="checkbox_label(this)">アクセスした</span></div>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td  class="convert_do_category">固有</td>
+                          <td>
+
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="category">
+                      <div class="category_name">ターゲット指定</div>
+                      <div class="category_radio convert_radio">
+                        <input type="radio" name="convert_target_mode" value="true" checked>
+                        <span class="tab_item" onclick="radio_label(this)">静的</span>
+                        <input type="radio" name="convert_target_mode" value="false">
+                        <span class="tab_item" onclick="radio_label(this)">動的</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="control_button">
+              <div id="log_cancel_button">キャンセル</div>
+              <div id="log_save_button">保存</div>
+            </div>
 
           </div>         
         </div>
 
         <script type="text/javascript" src="/ealplus-public/javascripts/edittool.js"></script>
+        <script type="text/javascript" src="/ealplus-public/javascripts/convert-log-config.js"></script>
       </div>
         
       

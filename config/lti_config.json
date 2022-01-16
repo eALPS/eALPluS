@@ -1,6 +1,0 @@
-{
-    "send_domain" : "https://kuromoodle.yukkuriikouze.com/2021" ,
-    "receive_domain" : "https://dev.kuropengin.com" ,
-    "lms_name" : "kuropen",
-    "secret_key" : "e9RoSWBtFwML8DC"
-}

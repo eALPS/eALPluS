@@ -101,7 +101,7 @@
                     <% } %>
                   <% } %>
                 </table>
-                <div id="add_tb">+</div>
+                <div id="add_route">+</div>
                 <div class="csv_load_button_area">
                   <label class="csv_load_button" for="csv_load">
                     CSVファイルの読み込み
@@ -171,6 +171,46 @@
             </div>
 
             <div class="category">
+              <div class="category_name">リクエストヘッダの追加</div>
+              <table id="reqheader_table">
+                <tr>
+                  <th class="del_td"></th>
+                  <th class="student_number_td">ヘッダ</th>
+                  <th class="tool_url_td">値</th>
+                </tr>
+                <% if (tool.option.reqheader) { %>  
+                  <% for( const header in tool.option.reqheader ){ %> 
+                    <tr>
+                      <td><input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" /></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= header %>"></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= tool.option.reqheader[header] %>"></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </table>
+              <div id="add_reqheader">+</div>
+  
+              <div class="category_name">レスポンスヘッダの追加</div>
+              <table id="resheader_table">
+                <tr>
+                  <th class="del_td"></th>
+                  <th class="student_number_td">ヘッダ</th>
+                  <th class="tool_url_td">値</th>
+                </tr>
+                <% if (tool.option.resheader) { %>  
+                  <% for( const header in tool.option.resheader ){ %> 
+                    <tr>
+                      <td><input type="button" class="del_tb_button" value="×" onclick="deleteRow(this)" /></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= header %>"></td>
+                      <td><input type="text" class="category_input_text" size="40" value="<%= tool.option.resheader[header] %>"></td>
+                    </tr>
+                  <% } %>
+                <% } %>
+              </table>
+              <div id="add_resheader">+</div>
+            </div>
+
+            <div class="category">
               <div class="category_name">ツールの削除</div>
               <div id="delete_button">削除</div>
             </div>
@@ -185,12 +225,86 @@
           </div>
           <div id="log_info_contents" class="info_contens_off">
             <div class="category">
-              <div class="category_name">ログ変換機能</div>
+              <div class="category_name">デフォルト収集ログ設定</div>
+
               <div class="category_radio convert_radio">
-                <input id="convert_true" type="radio" name="convert_status" value="true">
-                <label class="tab_item" for="convert_true">有効</label>
-                <input id="convert_false" type="radio" name="convert_status" value="false" checked>
-                <label class="tab_item" for="convert_false">無効</label>
+                <div class="log_name">ツール起動ログ</div>
+                <input id="launch_true" type="radio" name="launch_status" value="true">
+                <label class="tab_item" for="launch_true">有効</label>
+                <input id="launch_false" type="radio" name="launch_status" value="false" checked>
+                <label class="tab_item" for="launch_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">アクセスログ</div>
+                <input id="access_true" type="radio" name="access_status" value="true">
+                <label class="tab_item" for="access_true">有効</label>
+                <input id="access_false" type="radio" name="access_status" value="false" checked>
+                <label class="tab_item" for="access_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">タブ状態ログ</div>
+                <input id="tab_true" type="radio" name="tab_status" value="true">
+                <label class="tab_item" for="tab_true">有効</label>
+                <input id="tab_false" type="radio" name="tab_status" value="false" checked>
+                <label class="tab_item" for="tab_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">ツール終了ログ</div>
+                <input id="terminate_true" type="radio" name="terminate_status" value="true">
+                <label class="tab_item" for="terminate_true">有効</label>
+                <input id="terminate_false" type="radio" name="terminate_status" value="false" checked>
+                <label class="tab_item" for="terminate_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">キー入力ログ</div>
+                <input id="key_true" type="radio" name="key_status" value="true">
+                <label class="tab_item" for="key_true">有効</label>
+                <input id="key_false" type="radio" name="key_status" value="false" checked>
+                <label class="tab_item" for="key_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">クッリクログ</div>
+                <input id="click_true" type="radio" name="click_status" value="true">
+                <label class="tab_item" for="click_true">有効</label>
+                <input id="click_false" type="radio" name="click_status" value="false" checked>
+                <label class="tab_item" for="click_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">スクロールログ</div>
+                <input id="scroll_true" type="radio" name="scroll_status" value="true">
+                <label class="tab_item" for="scroll_true">有効</label>
+                <input id="scroll_false" type="radio" name="scroll_status" value="false" checked>
+                <label class="tab_item" for="scroll_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">コピーログ</div>
+                <input id="copy_true" type="radio" name="copy_status" value="true">
+                <label class="tab_item" for="copy_true">有効</label>
+                <input id="copy_false" type="radio" name="copy_status" value="false" checked>
+                <label class="tab_item" for="copy_false">無効</label>
+              </div>
+
+              <div class="category_radio convert_radio">
+                <div class="log_name">カットログ</div>
+                <input id="cut_true" type="radio" name="cut_status" value="true">
+                <label class="tab_item" for="cut_true">有効</label>
+                <input id="cut_false" type="radio" name="cut_status" value="false" checked>
+                <label class="tab_item" for="cut_false">無効</label>
+              </div>
+              
+              <div class="category_radio convert_radio">
+                <div class="log_name">ペーストログ</div>
+                <input id="paste_true" type="radio" name="paste_status" value="true">
+                <label class="tab_item" for="paste_true">有効</label>
+                <input id="paste_false" type="radio" name="paste_status" value="false" checked>
+                <label class="tab_item" for="paste_false">無効</label>
               </div>
             </div>
 
@@ -250,6 +364,12 @@
                 </div>
               </div>
             </div>
+
+            <div class="control_button">
+              <div id="log_cancel_button">キャンセル</div>
+              <div id="log_save_button">保存</div>
+            </div>
+
           </div>         
         </div>
 

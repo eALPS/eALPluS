@@ -164,7 +164,7 @@
     justify-content: flex-end;
 }
 
-#cancel_button{
+#cancel_button,#log_cancel_button{
     width: 120px;
     height: 40px;
     margin: 0 10px;
@@ -179,7 +179,7 @@
     opacity: 0.8;
 }
 
-#save_button{
+#save_button,#log_save_button{
     width: 120px;
     height: 40px;
     margin: 0 10px;
@@ -265,7 +265,7 @@ input[name="proxy_rule"]{
     background-position: bottom 10px center;
 }
 
-#route_table{
+#route_table, #reqheader_table, #resheader_table{
     width: calc(100% - 30px);
     margin: 0 auto;
     word-wrap: break-word;
@@ -273,11 +273,11 @@ input[name="proxy_rule"]{
     border-spacing: 0;
 }
 
-#route_table tr:nth-child(odd){
+#route_table tr:nth-child(odd), #reqheader_table tr:nth-child(odd), #resheader_table tr:nth-child(odd){
     background-color: #eee;
 }
 
-#route_table th{
+#route_table th, #reqheader_table th, #resheader_table th{
     color: #FFF;
 }
 
@@ -287,11 +287,13 @@ input[name="proxy_rule"]{
 }
 .student_number_td{
     background-color: rgb(109, 192, 109);
+    width:50%;
 }
 .tool_url_td{
     background-color:rgb(109, 192, 109);
+    width:50%;
 }
-#add_tb{
+#add_route, #add_reqheader, #add_resheader{
     width: calc(100% - 30px);
     margin: 0 auto;
     height: 25px;
@@ -305,7 +307,7 @@ input[name="proxy_rule"]{
     background: rgba(109, 192, 109);
     color: #FFF;
 }
-#add_tb:hover{
+#add_route:hover, #add_reqheader:hover, #add_resheader:hover{
     opacity: 0.75;
 }
 .del_tb_button{
@@ -353,3 +355,5 @@ input[name="proxy_rule"]{
     display: none;
 }
   
+
+

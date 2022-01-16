@@ -1,1 +1,5 @@
-config/
+node_modules/
+config/*.json
+!config/*.template
+logs/**/*.log
+logs/**/*.gz

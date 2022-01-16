@@ -1,4 +1,4 @@
-var page_list = ["1","2","3","7"];
+var page_list = ["1","2","3","7","8"];
 var now_page = 0;
 var route_len = 0;
 
@@ -20,7 +20,7 @@ document.getElementById("back_button").onclick = function(){
     }
 };
 
-document.getElementById("next_button").onclick = function(){
+document.getElementById("next_button").onclick = async function(){
     var checke_flag = true;
     
     if(now_page == 0){
@@ -69,8 +69,8 @@ document.getElementById("next_button").onclick = function(){
     }
     else if(now_page == 2){
         if(document.getElementsByName("proxy_rule")[0].checked){
-            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
-            if(!reg.test(document.getElementsByName("tool_url")[0].value)){
+            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d%_]*)?$','i');
+            if(!urlCheck(document.getElementsByName("tool_url")[0].value)){
                 checke_flag = false;
                 document.getElementById("tool_url_error").textContent="正しいURLを入力してください";
             }
@@ -80,17 +80,16 @@ document.getElementById("next_button").onclick = function(){
         }
         else if(document.getElementsByName("proxy_rule")[1].checked){
             var reg_id = new RegExp(/[!"#$%&'()\*\+\.,\/:;<=>?@\[\\\]^`{|}~]/g);
-            var reg_url = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
-            for(var _route = 0; _route < route_len; _route++){
+            for(const _route of document.getElementById("route_table").rows){
                 try {
-                    if(document.getElementsByName("route_" + _route + "_id")[0].value){
-                        if(reg_id.test(document.getElementsByName("route_" + _route + "_id")[0].value)){
+                    if(_route.cells[1].firstChild.value){
+                        if(reg_id.test(_route.cells[1].firstChild.value)){
                             checke_flag = false;
                             document.getElementById("route_table_error").textContent="学籍番号に使用できない文字が含まれています";
                             break;
                         }
                         else{
-                            if(!reg_url.test(document.getElementsByName("route_" + _route + "_url")[0].value)){
+                            if(!urlCheck(_route.cells[2].firstChild.value)){
                                 checke_flag = false;
                                 document.getElementById("route_table_error").textContent="正しいURLを入力してください";
                                 break;
@@ -112,12 +111,11 @@ document.getElementById("next_button").onclick = function(){
 
         }
         else if(document.getElementsByName("proxy_rule")[2].checked){
-            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
-            if(!reg.test(document.getElementsByName("role_teacher_url")[0].value)){
+            if(!urlCheck(document.getElementsByName("role_teacher_url")[0].value)){
                 checke_flag = false;
                 document.getElementById("role_url_error").textContent="正しいURLを入力してください";
             }
-            else if(!reg.test(document.getElementsByName("role_student_url")[0].value)){
+            else if(!urlCheck(document.getElementsByName("role_student_url")[0].value)){
                 checke_flag = false;
                 document.getElementById("role_url_error").textContent="正しいURLを入力してください";
             }
@@ -126,8 +124,7 @@ document.getElementById("next_button").onclick = function(){
             }
         }
         else if(document.getElementsByName("proxy_rule")[3].checked){
-            var reg = new RegExp('^(https?:\\/\\/)'+'((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+'((\\d{1,3}\\.){3}\\d{1,3}))'+'(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+'(\\?[;&a-z\\d%_.~+=-]*)?'+'(\\#[-a-z\\d_]*)?$','i');
-            if(!reg.test(document.getElementsByName("dynamic_search_url")[0].value)){
+            if(!urlCheck(document.getElementsByName("dynamic_search_url")[0].value)){
                 checke_flag = false;
                 document.getElementById("dynamic_url_error").textContent="正しいURLを入力してください";
             }
@@ -149,31 +146,35 @@ function page_change(){
 
     now_page += 1;
 
-    if(now_page == 2){
+    if(now_page == 3){
         document.getElementById('next_button').innerText = "作成";
     }
-    else if(now_page == 3){
+    else if(now_page == 4){
         document.getElementById('next_button').classList.add("display_off");
         document.getElementById('back_button').classList.add("display_off");
 
-        var json_asocc = {};
-        var resid_option = [];
-        var recid_option = [];
+        let json_asocc = {};
+        let resid_option = [];
+        let recid_option = [];
+        let reqheader_option = {};
+        let resheader_option = {};
 
         json_asocc.tool_id = document.getElementsByName("tool_id")[0].value;
         json_asocc.tool_name = document.getElementsByName("tool_name")[0].value;
         if(document.getElementsByName("proxy_rule")[0].checked){
             json_asocc.route_mode = "single";
-            json_asocc.route_url = document.getElementsByName("tool_url")[0].value;
+            json_asocc.route_url = urlCheck(document.getElementsByName("tool_url")[0].value);
             resid_option = document.getElementsByName("tool_single_optinon_resid")[0].value.split(",");
             recid_option = document.getElementsByName("tool_single_optinon_recid")[0].value.split(",");
         }
         else if(document.getElementsByName("proxy_rule")[1].checked){
             json_asocc.route_mode = "multi";
             json_asocc.route_list = {};
-            for(var _route = 0; _route < route_len; _route++){
+            for(var _route of document.getElementById("route_table").rows){
                 try {
-                    json_asocc.route_list[document.getElementsByName("route_" + _route + "_id")[0].value] = document.getElementsByName("route_" + _route + "_url")[0].value;
+                    if(_route.cells[1].firstChild.value){
+                        json_asocc.route_list[_route.cells[1].firstChild.value] = urlCheck(_route.cells[2].firstChild.value);
+                    }
                 }
                 catch (e){}
             }
@@ -181,20 +182,39 @@ function page_change(){
         else if(document.getElementsByName("proxy_rule")[2].checked){
             json_asocc.route_mode = "role";
             json_asocc.route_list = {};
-            json_asocc.route_list.teacher = document.getElementsByName("role_teacher_url")[0].value;
-            json_asocc.route_list.student = document.getElementsByName("role_student_url")[0].value;
+            json_asocc.route_list.teacher = urlCheck(document.getElementsByName("role_teacher_url")[0].value);
+            json_asocc.route_list.student = urlCheck(document.getElementsByName("role_student_url")[0].value);
             resid_option = document.getElementsByName("tool_role_optinon_resid")[0].value.split(",");
             recid_option = document.getElementsByName("tool_role_optinon_recid")[0].value.split(",");
         }
         else if(document.getElementsByName("proxy_rule")[3].checked){
             json_asocc.route_mode = "dynamic";
             json_asocc.route_list = {};
-            json_asocc.route_url = document.getElementsByName("dynamic_search_url")[0].value;
+            json_asocc.route_url = urlCheck(document.getElementsByName("dynamic_search_url")[0].value);
             resid_option = document.getElementsByName("tool_dynamic_optinon_resid")[0].value.split(",");
             recid_option = document.getElementsByName("tool_dynamic_optinon_recid")[0].value.split(",");
         }
 
-        if(resid_option.length || recid_option.length){
+        for(const _route of document.getElementById("reqheader_table").rows){
+            try {
+                if(_route.cells[1].firstChild.value){
+                    reqheader_option[_route.cells[1].firstChild.value] = _route.cells[2].firstChild.value;
+                }
+            }
+            catch (e){}
+        }
+
+        for(const _route of document.getElementById("resheader_table").rows){
+            try {
+                if(_route.cells[1].firstChild.value){
+                    resheader_option[_route.cells[1].firstChild.value] = _route.cells[2].firstChild.value;
+                }
+            }
+            catch (e){}
+        }
+        
+
+        if(resid_option.length || recid_option.length || Object.keys(reqheader_option).length || Object.keys(resheader_option).length){
             json_asocc.option = {};
             if(resid_option.length){
                 json_asocc.option.pathRewriteStudent = resid_option;
@@ -202,7 +222,15 @@ function page_change(){
             if(recid_option.length){
                 json_asocc.option.pathRewriteClass = recid_option;
             }
+            if(Object.keys(reqheader_option).length){
+                json_asocc.option.reqheader = reqheader_option
+            }
+            if(Object.keys(resheader_option).length){
+                json_asocc.option.resheader = resheader_option
+            }
         }
+
+        
 
         var json_text = JSON.stringify(json_asocc);
     
@@ -232,6 +260,16 @@ function page_list_change(){
     }
     else{
         page_list[2] = "6";
+    }
+}
+
+function urlCheck(url){
+    try{
+        const checkedUrl = new URL(url)
+        return url
+    }
+    catch(e){
+        return false
     }
 }
 
@@ -301,8 +339,16 @@ function deleteColumn(id) {
     }
 }
 
-document.getElementById("add_tb").onclick = function(){
+document.getElementById("add_route").onclick = function(){
     insertRow('route_table');
+}
+
+document.getElementById("add_reqheader").onclick = function(){
+    insertRow('reqheader_table');
+}
+
+document.getElementById("add_resheader").onclick = function(){
+    insertRow('resheader_table');
 }
 
 document.getElementById("csv_load").addEventListener('change', function(e) {

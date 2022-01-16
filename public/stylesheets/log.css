@@ -93,10 +93,10 @@
 .convert_radio label, .convert_radio span{
     margin: 0 10px;
     width: 100px;
-    height: 50px;
+    height: 40px;
     background: #646464;
     color: #FFF;
-    line-height: 50px;
+    line-height: 40px;
     text-align: center;
     font-size: 18px;
     font-weight: bold;
@@ -109,4 +109,17 @@
     border: solid 5px #FFF;
 }
 
+.category_radio{
+    margin: 20px 0;
+}
+
+.tab_item{
+    box-shadow: 0 0px 3px 0 rgb(0 0 0 / 50%);
+}
+
+.log_name{
+    font-size: 18px;
+    font-weight: bold;
+    width: 200px;
+}
 

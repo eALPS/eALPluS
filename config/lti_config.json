@@ -1,6 +1,6 @@
 {
-    "send_domain" : "http://192.168.10.161/moodle" ,
-    "receive_domain" : "http://192.168.10.162:3001" ,
-    "lms_name" : "test",
-    "secret_key" : "dmCFJ45VBRKKAOo"
+    "send_domain" : "https://kuromoodle.yukkuriikouze.com/2021" ,
+    "receive_domain" : "https://dev.kuropengin.com" ,
+    "lms_name" : "kuropen",
+    "secret_key" : "e9RoSWBtFwML8DC"
 }

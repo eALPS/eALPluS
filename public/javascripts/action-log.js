@@ -174,7 +174,7 @@ async function copy_log(e){
 
 	let copy_url =document.getElementById("tool").contentWindow.location.pathname
 	copy_url = copy_url.replace( "/connection/" + location.pathname.split("/")[2] + "/" + url_tool_id , "" )
-	const copy_value = document.getElementById("tool").contentWindow.document.getSelection().toString()
+	const copy_value = encodeURI(document.getElementById("tool").contentWindow.document.getSelection().toString())
 
 	const send_json = {"tool_id":url_tool_id,"class":location.pathname.split("/")[2],"page":copy_url,"element":copy_json,"value":copy_value,"type":"copy"};
 	xhr.open('post', "/ealplus-api/tool_select", true)
@@ -188,7 +188,7 @@ async function cut_log(e){
 
 	let cut_url =document.getElementById("tool").contentWindow.location.pathname
 	cut_url = cut_url.replace( "/connection/" + location.pathname.split("/")[2] + "/" + url_tool_id , "" )
-	const cut_value = document.getElementById("tool").contentWindow.document.getSelection().toString()
+	const cut_value = encodeURI(document.getElementById("tool").contentWindow.document.getSelection().toString())
 
 	const send_json = {"tool_id":url_tool_id,"class":location.pathname.split("/")[2],"page":cut_url,"element":cut_json,"value":cut_value,"type":"cut"};
 	xhr.open('post', "/ealplus-api/tool_select", true)
@@ -202,7 +202,7 @@ async function paste_log(e){
 
 	let paste_url =document.getElementById("tool").contentWindow.location.pathname
 	paste_url = paste_url.replace( "/connection/" + location.pathname.split("/")[2] + "/" + url_tool_id , "" )
-	const paste_value = e.clipboardData.getData('text')
+	const paste_value = encodeURI(e.clipboardData.getData('text'))
 
 	const send_json = {"tool_id":url_tool_id,"class":location.pathname.split("/")[2],"page":paste_url,"element":paste_json,"value":paste_value,"type":"paste"};
 	xhr.open('post', "/ealplus-api/tool_insert", true)

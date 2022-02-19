@@ -1,6 +1,10 @@
 {
-    "send_domain" : "" ,
-    "receive_domain" : "" ,
-    "lms_name" : "",
-    "secret_key" : ""
+    "my_domain" : "",
+    "platform" : [
+        {
+            "name" : "",
+            "url" : "" ,
+            "key" : ""
+        }
+    ]
 }

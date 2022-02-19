@@ -16,6 +16,8 @@ const { tokenMaker } = require("../node_modules/lti-node-library/Provider/token_
 const { prep_send_score, send_score } = require("../node_modules/lti-node-library/Provider/student_score")
 const { grade_project } = require("../tool/grading_tool")
 
+const platform = require('../tool/platform')
+platform.regPlatform()
 
 var sessionMiddleware = session({
   name: 'lti_v1p3_library',
@@ -34,19 +36,6 @@ var sessionMiddleware = session({
 
 router.session = sessionMiddleware
 router.use(sessionMiddleware)
-
-const lti_config = require('../config/lti_config.json')
-
-registerPlatform(
-  lti_config.send_domain,
-  lti_config.lms_name,
-  lti_config.secret_key,
-  lti_config.send_domain + '/mod/lti/auth.php',
-  lti_config.send_domain + '/mod/lti/token.php',
-  lti_config.receive_domain + '/lti/submit',
-  { method: 'JWK_SET', key: lti_config.send_domain + '/mod/lti/certs.php' }
-)
-
 
 router.get('/key/:name', async (req, res) => {
   let publicKey = await Database.GetKey(
@@ -109,5 +98,6 @@ router.get("/logout", (req, res) => {
   res.redirect(req.session.decoded_launch["https://purl.imsglobal.org/spec/lti/claim/launch_presentation"].return_url)
   req.session.destroy()
 })
+
 
 module.exports = router

@@ -17,7 +17,7 @@
     "http-proxy": "^1.18.1",
     "http-proxy-middleware": "^1.0.5",
     "log4js": "^6.3.0",
-    "lti-node-library": "git://github.com/kuropengin/lti-node-library.git",
+    "lti-node-library": "github:kuropengin/lti-node-library",
     "mongoose": "^5.10.9",
     "morgan": "~1.9.1",
     "request": "^2.88.2",

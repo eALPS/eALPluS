@@ -220,7 +220,6 @@ const options = {
                 local_student_ids = req.session.decoded_launch.student_id.split("@")
                 db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], local_student_ids[0], role_check, db_result.url, db_result.option)
                 // db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], req.session.decoded_launch.student_id, role_check, db_result.url, db_result.option)
-                db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option)
               }
               else{
                 db_result.url = db_result.durl

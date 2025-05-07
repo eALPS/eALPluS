@@ -217,6 +217,9 @@ const options = {
             let db_result = await proxyDB(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check)
             if("dynamic" in db_result){
               if(!db_result.durl.length){
+                local_student_ids = req.session.decoded_launch.student_id.split("@")
+                db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], local_student_ids[0], role_check, db_result.url, db_result.option)
+                // db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], req.session.decoded_launch.student_id, role_check, db_result.url, db_result.option)
                 db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option)
               }
               else{
@@ -245,10 +248,14 @@ const options = {
         let db_result = await proxyDB(req.session.decoded_launch.class_id,par[2],req.session.decoded_launch.student_id,role_check)
         if("dynamic" in db_result){
           if( "ipp_search" in req.query){
-            db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option)
+            local_student_ids = req.session.decoded_launch.student_id.split("@")
+            db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], local_student_ids[0], role_check, db_result.url, db_result.option)
+            // db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], req.session.decoded_launch.student_id, role_check, db_result.url, db_result.option)
           }
           else if(!db_result.durl.length){
-            db_result = await proxyAPI(req.session.decoded_launch.class_id ,par[2] ,req.session.decoded_launch.student_id,role_check,db_result.url,db_result.option)
+            local_student_ids = req.session.decoded_launch.student_id.split("@")
+            db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], local_student_ids[0], role_check, db_result.url, db_result.option)
+            // db_result = await proxyAPI(req.session.decoded_launch.class_id, par[2], req.session.decoded_launch.student_id, role_check, db_result.url, db_result.option)
           }
           else{
             db_result.url = db_result.durl
